@@ -83,7 +83,7 @@ if (opt$install) {
   }
   
   Git <- c("Crick-CancerGenomics/ascat/ASCAT", "mskcc/facets", 
-           "ChristopherEeles/EaCoN")
+           "quevedor2/EaCoN")
   pkgCheckGithub(Git)
   
   ## These need to be installed in order

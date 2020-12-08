@@ -14,7 +14,6 @@ pkgCheck <- function(requiredPackages) {
   }
 }
 
-
 CRAN <- c("devtools", "BiocManager", "Rcpp", "parallel")
 pkgCheck(CRAN)
 

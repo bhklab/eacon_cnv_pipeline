@@ -1,5 +1,10 @@
 # Ignore
 rawdata/*
 procdata/*
+.snakemake
+renv/*
+.Rprofile
+\..*
+
 
 # Excepetions
