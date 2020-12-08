@@ -5,8 +5,6 @@
 # Maximum number of threads to use
 nthreads: 16
 
-
-
 # -- Pipeline configuration --
 
 # What should your analysis be called? This is prepended to all
@@ -23,6 +21,9 @@ metadata_dir: metadata
 # Where should processed data be written?
 procdata_dir: procdata
 
+# Where should the final results be written?
+results_dir: results
+
 # What type of array data?
 # Options are: cytoscan, oncoscan or snp6
 array_family: cytoscan
@@ -31,4 +32,4 @@ array_family: cytoscan
 #   built using the metadata_dir.
 # See https://github.com/gustaveroussy/EaCoN for information
 #   on the formatting the file for different array_families
-pairs_file: 'fletcher_LMS_pairs.csv'
+pairs_file: 'fletcher_LMS_pairs.tsv'

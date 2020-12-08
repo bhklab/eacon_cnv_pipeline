@@ -12,19 +12,23 @@ configfile: 'config.yaml'
 rawdata = config['rawdata_dir']
 metadata = config['metadata_dir']
 procdata = config['procdata_dir']
-paris_file = config['pairs_file']
+pairs_file = config['pairs_file']
 
-pairs_df = pd.read_csv(os.path.join([f'{metadata}', f'{config[]}'])
+pairs_df = pd.read_csv(os.path.join(f'{metadata}', f'{pairs_file}'))
+
+# 0.3 Ensure renv is being used
+os.system('Rscript -e "renv::activate()"')
 
 # -- 1. Batch processing of raw CEL or BAM files
 rule batch_process_rawdata:
     input:
-        pairs_file=config['pairs_file']
+        pairs_file=os.path.join(metadata, pairs_file)
     params:
         array_family=config['array_family']
     threads: config['nthreads']
-    output:
-        expand('{procdata}/{sample_name}')
+    # output:
+    #     expand('{procdata}/{sample_name}', 
+    #         procdata=procdata, sample_name=pairs_df.SampleName)
     script:
-        'scripts/1_batchProcessFiles.R'
+        'scripts/1_batchProcessRawdataFiles.R'
 
