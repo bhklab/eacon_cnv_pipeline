@@ -24,7 +24,8 @@ rule batch_process_rawdata:
     input:
         pairs_file=os.path.join(metadata, pairs_file)
     params:
-        array_family=config['array_family']
+        array_family=config['array_family'],
+        procdata=procdata
     threads: config['nthreads']
     # output:
     #     expand('{procdata}/{sample_name}', 
@@ -32,3 +33,4 @@ rule batch_process_rawdata:
     script:
         'scripts/1_batchProcessRawdataFiles.R'
 
+# -- 2. Segment Output from rule 1
