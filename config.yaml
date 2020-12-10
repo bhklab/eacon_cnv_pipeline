@@ -25,8 +25,15 @@ procdata_dir: procdata
 results_dir: results
 
 # What type of array data?
-# Options are: cytoscan, oncoscan or snp6
-array_family: cytoscan
+# Options are: CytoscanHD, CytoScan750k, Oncoscan... 
+array_type: CytoScanHD
+
+# Which reference should be used?
+# Options are from BSgenome: 
+#   - for Cytoscan arrays: BSgenome.Hsapiens.UCSC.hg19 or 
+#     BSgenome.Hsapiens.UCSC.hg38
+#   - for other arrays please see https://github.com/gustaveroussy/EaCoN
+reference: BSgenome.Hsapiens.UCSC.hg19
 
 # Name of the pairs file for the .CEL files, just the name, path will be
 #   built using the metadata_dir.
