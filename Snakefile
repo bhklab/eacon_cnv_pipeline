@@ -6,6 +6,8 @@ import pandas as pd
 
 ## TODO:: Check that workflow dependencies are installed
 
+print(os.getcwd())
+
 # -- 0.2 Load configuration files
 configfile: 'config.yaml'
 
@@ -16,8 +18,6 @@ pairs_file = config['pairs_file']
 
 pairs_df = pd.read_csv(os.path.join(f'{metadata}', f'{pairs_file}'))
 
-# 0.3 Ensure renv is being used
-os.system('Rscript -e "renv::activate()"')
 
 # -- 1. Batch processing of raw CEL or BAM files
 rule batch_process_rawdata:
