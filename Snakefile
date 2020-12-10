@@ -46,15 +46,16 @@ rule segment_processed_data:
     input:
         expand('{procdata}/{sample_name}/{sample_name}_{array_type}_Array_{ref_symbol}_processed.RDS', 
             procdata=procdata, sample_name=pairs_df.SampleName, array_type=config['array_type'],
-            analysis_name=config['analysis_name'], ref_symbol=ref_symbol)
+            ref_symbol=ref_symbol)
     params:
-        analysis_name=config['analysis_name'],
         procdata=procdata,
+        segmenter=config['segmenter'],
+        smoothk=config['smooth.k']
     threads: nthreads
     output:
-        expand('{procdata}/{sample_name}/ASCAT/L2R/{sample_name}.SEG.ASCAT.RDS',
-            procdata=procdata, sample_name=pairs_df.SampleName)
+        expand('{procdata}/{sample_name}/{segmenter}/L2R/{sample_name}.SEG.{segmenter}.RDS',
+            procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'])
     script:
         'scripts/2_segmentProcessedData.R'
 
-# -- 3. 
+# -- 3. Call copy number

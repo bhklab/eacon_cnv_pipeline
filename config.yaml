@@ -28,6 +28,8 @@ results_dir: results
 # Options are: CytoscanHD, CytoScan750k, Oncoscan... 
 array_type: CytoScanHD
 
+# -- Preprocessing configuration --
+
 # Which reference should be used?
 # Options are from BSgenome: 
 #   - for Cytoscan arrays: BSgenome.Hsapiens.UCSC.hg19 or 
@@ -40,3 +42,15 @@ reference: BSgenome.Hsapiens.UCSC.hg19
 # See https://github.com/gustaveroussy/EaCoN for information
 #   on the formatting the file for different array_families
 pairs_file: 'fletcher_LMS_pairs.tsv'
+
+# -- Segmentation configuration --
+
+
+# Which segmenter should be used?
+# Options are: 
+segmenter: 'ASCAT'
+
+
+# Should data smoothing be performed during segmentation; good for noisy data.
+# The logs from segmentation may suggest use of this parameter.
+smooth.k: TRUE
