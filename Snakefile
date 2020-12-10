@@ -40,6 +40,8 @@ rule batch_process_rawdata:
         'scripts/1_batchProcessRawdataFiles.R'
 
 # -- 2. L2R and BAF join segmentation
+## TODO:: parameterize the segmentation algorithm
+
 rule segment_processed_data:
     input:
         expand('{procdata}/{sample_name}/{sample_name}_{array_type}_Array_{ref_symbol}_processed.RDS', 
@@ -49,10 +51,9 @@ rule segment_processed_data:
         analysis_name=config['analysis_name'],
         procdata=procdata,
     threads: nthreads
-    # output:
-    #     expand('{procdata}/{sample_name}/2.{analysis_name}_{sample_name}_{array_family}_segmented.rds', 
-    #         procdata=procdata, sample_name=pairs_df.SampleName, array_family=config['array_family'],
-    #         analysis_name=config['analysis_name'])
+    output:
+        expand('{procdata}/{sample_name}/ASCAT/L2R/{sample_name}.SEG.ASCAT.RDS',
+            procdata=procdata, sample_name=pairs_df.SampleName)
     script:
         'scripts/2_segmentProcessedData.R'
 
