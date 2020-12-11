@@ -66,9 +66,9 @@ rule estimate_copy_number:
         procdata=procdata,
         gamma_range=config['gamma_range']
     threads: nthreads
-    # output: 
-    #     expand('{procdata}/{sample_name}/{segmenter}/ASCN/gamma_{gamma_value}/{sample_name}.SEG.{segmenter}.RDS',
-    #         procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'],
-    #         gamma_value=range(config['gamma_range'][0], config['gamm_range'][1] + 0.5, 0.5))
+    output: 
+        expand('{procdata}/{sample_name}/{segmenter}/ASCN/gamma_{gamma_value}/{sample_name}.SEG.{segmenter}.RDS',
+            procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'],
+            gamma_value=range(config['gamma_range'][0], config['gamma_range'][1] + 0.5, 0.5))
     script:
         'scripts/3_estimateCopyNumber.R'

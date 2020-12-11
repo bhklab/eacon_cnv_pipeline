@@ -5,7 +5,7 @@ This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It l
 ## Snakemake
 
 This pipeline leverages the `snakemake` Python package for workflow management. As a result the pipeline and its dependencies are easily
-installed from this repository, allowing quick setup, configuration and deployment of the pipeline.
+installed from this repository, allowing quick setup, configuration and deployment.
 
 For more information on Snakemake, please see: https://snakemake.readthedocs.io/en/stable/.
 
@@ -13,7 +13,7 @@ For more information on Snakemake, please see: https://snakemake.readthedocs.io/
 
 Dependency management for this pipeline is handled via `conda` for Python 
 and `renv` for R. To get started with setup you can install
-miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base`. 
+miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. 
 
 Alternatively you can install it directly from CRAN
 as described here: https://cran.r-project.org/.
