@@ -12,4 +12,5 @@ output <- snakemake@output
 # 2 -- Generate .html qc reports for
 
 # 1 -- Make copy number calls based on L2R segmentation results
-results <- ASCN.ff.Batch(input, nthread=nthreads, write.data=FALSE, return.data=TRUE)
+ASCN.ff.Batch(unlist(input), nthread=nthreads, force=TRUE, 
+    gammaRange=unlist(params$gamma_range))

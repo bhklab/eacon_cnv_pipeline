@@ -6,8 +6,6 @@ import pandas as pd
 
 ## TODO:: Check that workflow dependencies are installed
 
-print(os.getcwd())
-
 # -- 0.2 Load configuration files
 configfile: 'config.yaml'
 
@@ -50,7 +48,7 @@ rule segment_processed_data:
     params:
         procdata=procdata,
         segmenter=config['segmenter'],
-        smoothk=config['smooth.k']
+        smoothk=config['smoothk']
     threads: nthreads
     output:
         expand('{procdata}/{sample_name}/{segmenter}/L2R/{sample_name}.SEG.{segmenter}.RDS',
@@ -58,4 +56,19 @@ rule segment_processed_data:
     script:
         'scripts/2_segmentProcessedData.R'
 
-# -- 3. Call copy number
+# -- 3. Estimate copy number using the method appropriate to the selected segmenter from the previous step
+## TODO:: Try parallelizing in Snakemake instead of in R? Will make deploying on cluster easier
+rule estimate_copy_number:
+    input:
+        expand('{procdata}/{sample_name}/{segmenter}/L2R/{sample_name}.SEG.{segmenter}.RDS',
+            procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'])
+    params:
+        procdata=procdata,
+        gamma_range=config['gamma_range']
+    threads: nthreads
+    # output: 
+    #     expand('{procdata}/{sample_name}/{segmenter}/ASCN/gamma_{gamma_value}/{sample_name}.SEG.{segmenter}.RDS',
+    #         procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'],
+    #         gamma_value=range(config['gamma_range'][0], config['gamm_range'][1] + 0.5, 0.5))
+    script:
+        'scripts/3_estimateCopyNumber.R'

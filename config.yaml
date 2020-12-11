@@ -45,12 +45,17 @@ pairs_file: 'fletcher_LMS_pairs.tsv'
 
 # -- Segmentation configuration --
 
-
 # Which segmenter should be used?
-# Options are: 
+# Options are: ASCAT, FACETS or SEQUENZA
 segmenter: 'ASCAT'
 
-
 # Should data smoothing be performed during segmentation; good for noisy data.
-# The logs from segmentation may suggest use of this parameter.
-smooth.k: TRUE
+# An integer value indicating the half-window size for winsorization. 
+# Larger equals more smoothing, starting around 5 is recommended.
+smoothk: 100
+
+# --- Copy number estimation parameters
+
+# The range of gamma values to consider when modelling allele specific copy number
+# 
+gamma_range: [0.35, 0.95]
