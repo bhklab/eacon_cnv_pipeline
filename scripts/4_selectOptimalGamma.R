@@ -3,12 +3,14 @@ library(EaCoN)
 library(data.table)
 
 # -- 0.2 Parse snakemake arguments
-input <- snakemake@input
-params <- snakemake@params
-output <- snakemake@output
+# input <- snakemake@input
+# params <- snakemake@params
+# output <- snakemake@output
 
-if (missing(input) < 1) input <- list(out_dir='procdata')
-if (missing(params) < 1) params <- list(threads=16)
+
+input <- list(out_dir='procdata')
+params <- list(threads=16)
+output <- list(results='results')
 
 # -- 1. Read in gamma files
 
@@ -43,7 +45,6 @@ names(all.fits) <- sapply(all.fits, function(x) x$sample)
 vec.fits <- .fitsToVector(all.fits)
 
 # -- 3. Annotated the RDS data associated with the gamma files
-## FIXME:: Why is the function not exporting despite correct roxygen2 docs?
 
 # Change to fix error in annotaRDS.Batch
 setwd('procdata')
@@ -53,16 +54,27 @@ gr.cnv <- EaCoN:::annotateRDS.Batch(
   'ASCAT',
   nthread = params$threads,
   gamma.method = 'score',
-  pancan.ploidy = pancan.ploidy,
-  feature.set = c('bins', 'tads')
+  pancan.ploidy = pancan.ploidy
 )
 
+setwd('..')
 
-# gr.cnv <- EaCoN:::annotateRDS(
-#   all.fits[[1]]$fit,
-#   all.fits[[1]]$sample,
-#   'ASCAT',
-#   gamma.method = 'score',
-#   pancan.ploidy = pancan.ploidy,
-#   feature.set = c('bins', 'tads')
-# )
+# Save raw results object to disk
+qsave(gr.cnv, file = file.path(input$out_dir, 'optimal_gamma_list.qs'), nthread=params$threads)
+
+## ---- Construct and output eSet objects containing the results and write to disk
+buildPSetOut(gr.cnv, 'VDR', file.path(input$out_dir), meta = meta_data)
+
+## ---- Create GRangesList of segmentation results and save them to disk
+
+# Extract segmentation data.frames from the resutls object
+segmentation_df_list <- lapply(gr.cnv, function(x) x$seg)
+
+# Convert all data.frames to GRanges and return in a list
+list_of_gRanges <- lapply(segmentation_df_list, function(x) makeGRangesFromDataFrame(x, keep.extra.columns = TRUE))
+
+# Convert list of GRanges objects into GRangesList object
+cnv_grList <- GRangesList(list_of_gRanges)
+
+# Save GRangesList to disk for downstream analysis
+qsave(cnv_grList, file = file.path(output$results, 'fletcher_LMS_grList.qs'), nthread=params$threads)
