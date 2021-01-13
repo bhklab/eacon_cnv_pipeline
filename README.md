@@ -1,6 +1,6 @@
 # Cytoscan HD CNV Analysis Pipeline
 
-This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It leverages the `EaCoN` R package to conduct preprocessing and normalization, segmentation and copy number estimation from raw Cytoscan HD .CEL files. This package also 
+This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It leverages the `EaCoN` R package to conduct preprocessing and normalization, segmentation and copy number estimation from raw Cytoscan HD .CEL files. The `EaCoN` package also supports copy number estimation from Oncoscan, SNP6 arrays as well as WES data, but these features have not yet been implemented.
 
 ## Snakemake
 
@@ -13,7 +13,7 @@ For more information on Snakemake, please see: https://snakemake.readthedocs.io/
 
 Dependency management for this pipeline is handled via `conda` for Python 
 and `renv` for R. To get started with setup you can install
-miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. 
+miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. Please note that the EaCoN package has not been updated to work with R >= 4.0. 
 
 Alternatively you can install it directly from CRAN
 as described here: https://cran.r-project.org/.
@@ -44,7 +44,7 @@ If it is not automatically activated after installation please run
 The `renv` package can be used to install all R dependencies (both CRAN and
 Bioconductor). R version 3.6.3 and `renv` are included as dependencies in the `environment.yml` file and should be installed automatically when setting up your conda environment.
 
-To initialize this project with renv, first open R interactively and run
+To initialize this project with renv run:
 
 `Rscript -e 'library(renv); renv::init()'`
 
@@ -91,6 +91,8 @@ in the `config.yaml` file on what each field should contain.
 
 ### Segmentation 
 
-
+`snakemake --cores 2 segment_processed_data`
 
 ### Copy Number Calling
+
+`snakemake --cores 2 

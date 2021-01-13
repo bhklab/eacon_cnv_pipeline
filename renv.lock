@@ -172,13 +172,6 @@
       "Repository": "CRAN",
       "Hash": "b203113193e70978a696b2809525649d"
     },
-    "RApiSerialize": {
-      "Package": "RApiSerialize",
-      "Version": "0.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c5a68b4db79cfe8502878b3ed2b59853"
-    },
     "RColorBrewer": {
       "Package": "RColorBrewer",
       "Version": "1.1-2",
@@ -199,13 +192,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "125dc7a0ed375eb68c0ce533b48d291f"
-    },
-    "RcppParallel": {
-      "Package": "RcppParallel",
-      "Version": "5.0.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "551d50addb18c7b99637aa377a25afc8"
     },
     "Rhdf5lib": {
       "Package": "Rhdf5lib",
@@ -614,13 +600,6 @@
       "Repository": "CRAN",
       "Hash": "97def703420c8ab10d8f0e6c72101e02"
     },
-    "qs": {
-      "Package": "qs",
-      "Version": "0.23.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "66dd1aa03bc9948716ae219b5615b68e"
-    },
     "readr": {
       "Package": "readr",
       "Version": "1.4.0",
@@ -702,13 +681,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "a50483eba4ae70936dddf32decda5d20"
-    },
-    "stringfish": {
-      "Package": "stringfish",
-      "Version": "0.14.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "068640b1efcfae4c7e2f5556149624eb"
     },
     "tibble": {
       "Package": "tibble",

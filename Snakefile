@@ -3,6 +3,7 @@ import os
 import re
 import glob
 import pandas as pd
+import numpy as np
 
 ## TODO:: Check that workflow dependencies are installed
 
@@ -67,8 +68,21 @@ rule estimate_copy_number:
         gamma_range=config['gamma_range']
     threads: nthreads
     output: 
-        expand('{procdata}/{sample_name}/{segmenter}/ASCN/gamma_{gamma_value}/{sample_name}.SEG.{segmenter}.RDS',
-            procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'],
-            gamma_value=range(config['gamma_range'][0], config['gamma_range'][1] + 0.5, 0.5))
+        # expand('{procdata}/{sample_name}/{segmenter}/ASCN/gamma{gamma_value}/{sample_name}.ASCN.{segmenter}.RDS',
+        #     procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'],
+        #     gamma_value=np.round(np.arange(config['gamma_range'][0], config['gamma_range'][1] + 0.05, 0.05), 2))
     script:
         'scripts/3_estimateCopyNumber.R'
+
+
+# -- 4. Select the optimal gamma value for each sample
+rule select_optimal_gamma:
+    input:
+        out_dir=procdata
+    params:
+        nthreads=nthreads
+    script:
+        'scripts/4_selectOptimalGamma.R'
+
+
+# -- 5. Build SummarizedExperiment
