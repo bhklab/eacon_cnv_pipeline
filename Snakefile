@@ -76,11 +76,18 @@ rule estimate_copy_number:
 
 
 # -- 4. Select the optimal gamma value for each sample
+analysis_name = config['analysis_name']
+results_dir = config['results_dir']
+
 rule select_optimal_gamma:
     input:
         out_dir=procdata
     params:
-        nthreads=nthreads
+        nthreads=nthreads,
+        analysis_name=analysis_name,
+        results=results_dir
+    output:
+        f'{results_dir}/{analysis_name}_grList.qs'
     script:
         'scripts/4_selectOptimalGamma.R'
 

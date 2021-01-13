@@ -1,21 +1,22 @@
 # 0.1 Load dependencies
+renv::activate()
+
 library(EaCoN)
 library(data.table)
+library(qs)
+library(GenomicRanges)
 
 # -- 0.2 Parse snakemake arguments
-# input <- snakemake@input
-# params <- snakemake@params
-# output <- snakemake@output
-
-
-input <- list(out_dir='procdata')
-params <- list(threads=16)
-output <- list(results='results')
+input <- snakemake@input
+params <- snakemake@params
+output <- snakemake@output
 
 # -- 1. Read in gamma files
 
 gammaFiles <- list.files(input$out_dir, '.*gammaEval.*txt', recursive=TRUE, 
     full.names=TRUE)
+print(gammaFiles)
+
 
 # -- 2. Load pancanPloidy data as reference
 data(pancanPloidy.noSegs)
@@ -52,7 +53,7 @@ setwd('procdata')
 gr.cnv <- EaCoN:::annotateRDS.Batch(
   all.fits,
   'ASCAT',
-  nthread = params$threads,
+  nthread = params$nthreads,
   gamma.method = 'score',
   pancan.ploidy = pancan.ploidy
 )
@@ -60,10 +61,7 @@ gr.cnv <- EaCoN:::annotateRDS.Batch(
 setwd('..')
 
 # Save raw results object to disk
-qsave(gr.cnv, file = file.path(input$out_dir, 'optimal_gamma_list.qs'), nthread=params$threads)
-
-## ---- Construct and output eSet objects containing the results and write to disk
-buildPSetOut(gr.cnv, 'VDR', file.path(input$out_dir), meta = meta_data)
+qsave(gr.cnv, file = file.path(input$out_dir, paste0(params$analysis_name, 'optimal_gamma_list.qs')), nthread=params$nthreads)
 
 ## ---- Create GRangesList of segmentation results and save them to disk
 
@@ -77,4 +75,4 @@ list_of_gRanges <- lapply(segmentation_df_list, function(x) makeGRangesFromDataF
 cnv_grList <- GRangesList(list_of_gRanges)
 
 # Save GRangesList to disk for downstream analysis
-qsave(cnv_grList, file = file.path(output$results, 'fletcher_LMS_grList.qs'), nthread=params$threads)
+qsave(cnv_grList, file = file.path(params$results, paste0(params$analysis_name, '_grList.qs')), nthread=params$nthreads)

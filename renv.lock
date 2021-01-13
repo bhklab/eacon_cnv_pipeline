@@ -90,15 +90,15 @@
     },
     "EaCoN": {
       "Package": "EaCoN",
-      "Version": "0.3.4-1",
+      "Version": "0.3.5",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "EaCoN",
-      "RemoteUsername": "ChristopherEeles",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "a1a7552da0cef9d7043906aaf240e9931512a3c3",
-      "Hash": "b457cc62aa94eaa572a805249f1c898f"
+      "RemoteUsername": "bhklab",
+      "RemoteRef": "master",
+      "RemoteSha": "0ef12f4bdb0d0e6674f840a7d9ea60e0351a9192",
+      "Hash": "d73467bcc25c0fb6fbb746fe2bd68c77"
     },
     "GenomeInfoDb": {
       "Package": "GenomeInfoDb",
@@ -545,11 +545,11 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "pctGCdata",
       "RemoteUsername": "veseshan",
-      "RemoteRef": "HEAD",
+      "RemoteRepo": "pctGCdata",
+      "RemoteRef": "master",
       "RemoteSha": "d2d4fafd10595750977f9bf5ebfeaed6e78da781",
-      "Hash": "f66646c28dfce9ca4e32390e8aef97f2"
+      "Hash": "6abadb7e9f57611933a8927337a03701"
     },
     "pillar": {
       "Package": "pillar",
