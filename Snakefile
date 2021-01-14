@@ -87,9 +87,20 @@ rule select_optimal_gamma:
         analysis_name=analysis_name,
         results=results_dir
     output:
-        f'{results_dir}/{analysis_name}_grList.qs'
+        f'{results_dir}/{analysis_name}_grList.qs',
+        f'{procdata}/{analysis_name}optimal_gamma_list.qs'
     script:
         'scripts/4_selectOptimalGamma.R'
 
 
 # -- 5. Build SummarizedExperiment
+rule build_summarized_experiments:
+    input: 
+        f'{procdata}/{analysis_name}optimal_gamma_list.qs'
+    params:
+        analysis_name=analysis_name,
+        results=results_dir
+    output:
+        [f'{results_dir}/{analysis_name}_{feature}_SumExp.qs' for feature in ['bins', 'gene']]
+    script:
+        'scripts/5_buildSummarizedExperiments.R'

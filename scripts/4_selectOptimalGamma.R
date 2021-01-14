@@ -5,6 +5,7 @@ library(EaCoN)
 library(data.table)
 library(qs)
 library(GenomicRanges)
+library
 
 # -- 0.2 Parse snakemake arguments
 input <- snakemake@input
