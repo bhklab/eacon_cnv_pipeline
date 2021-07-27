@@ -5,7 +5,6 @@ library(EaCoN)
 library(data.table)
 library(qs)
 library(GenomicRanges)
-library
 
 # -- 0.2 Parse snakemake arguments
 input <- snakemake@input
@@ -25,7 +24,7 @@ pancan.ploidy <- pancan.obj.segless$breaks$ploidy
 
 all.fits <- lapply(gammaFiles, function(file) {
   list(fit = fread(file, sep = '\t'),
-       sample = strsplit(file, '/')[[1]][2]
+      sample = strsplit(file, '/')[[1]][2]
   )
 })
 names(all.fits) <- sapply(all.fits, function(x) x$sample)

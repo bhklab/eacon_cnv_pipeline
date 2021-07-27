@@ -90,15 +90,15 @@
     },
     "EaCoN": {
       "Package": "EaCoN",
-      "Version": "0.3.5",
+      "Version": "0.3.4-1",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "EaCoN",
-      "RemoteUsername": "gustaveroussy",
-      "RemoteRef": "0.3.5",
-      "RemoteSha": "9247c92d7bcaf410f8a449dce3d3f298fb446965",
-      "Hash": "8f5fe057a56335f30e2ee76c939f86f1"
+      "RemoteUsername": "quevedor2",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "4ae160ecf7e4db4c5b1985552aec45c15c62dd3f",
+      "Hash": "35f436f92d56bb9274e9199757cd43cc"
     },
     "GenomeInfoDb": {
       "Package": "GenomeInfoDb",
