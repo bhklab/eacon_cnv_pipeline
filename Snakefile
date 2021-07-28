@@ -96,8 +96,10 @@ rule select_optimal_gamma:
 # -- 5. Build SummarizedExperiment
 rule build_summarized_experiments:
     input: 
-        f'{procdata}/{analysis_name}optimal_gamma_list.qs'
+        gr_cnv=f'{procdata}/{analysis_name}optimal_gamma_list.qs',
+        pairs_file=os.path.join(metadata, pairs_file)
     params:
+        nthreads=nthreads,
         analysis_name=analysis_name,
         results=results_dir
     output:
