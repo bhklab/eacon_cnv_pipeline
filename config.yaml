@@ -3,7 +3,7 @@
 # -- Resource configuration --
 
 # Maximum number of threads to use
-nthreads: 16
+nthreads: 8
 
 # -- Pipeline configuration --
 
