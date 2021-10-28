@@ -1,6 +1,6 @@
-# Cytoscan HD CNV Analysis Pipeline
+# Easy Copy Number Analysis (EaCoN) Pipeline
 
-This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It leverages the `EaCoN` R package to conduct preprocessing and normalization, segmentation and copy number estimation from raw Cytoscan HD .CEL files. The `EaCoN` package also supports copy number estimation from Oncoscan, SNP6 arrays as well as WES data, but these features have not yet been implemented.
+This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It leverages the `EaCoN` R package to conduct preprocessing and normalization, segmentation and copy number estimation from raw Cytoscan HD .CEL files. The `EaCoN` package also supports copy number estimation from Oncoscan, SNP6 arrays as well as WES data, however, the current pipeline has only implemented support for Cytoscan and Oncoscan based arrays.
 
 ## Snakemake
 
@@ -95,4 +95,12 @@ in the `config.yaml` file on what each field should contain.
 
 ### Copy Number Calling
 
-`snakemake --cores 2 
+`snakemake --cores 2 estimate_copy_number`
+
+### Determine Optimal Value for Gamma
+
+`snakemake --cores 2 select_optimal_gamma`
+
+### Build Bioconductor SummarizedExperiment Objects
+
+`snakemake --cores 2 build_summarized_experiments`

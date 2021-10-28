@@ -39,7 +39,6 @@ rule batch_process_rawdata:
         'scripts/1_batchProcessRawdataFiles.R'
 
 # -- 2. L2R and BAF join segmentation
-## TODO:: parameterize the segmentation algorithm
 
 rule segment_processed_data:
     input:
