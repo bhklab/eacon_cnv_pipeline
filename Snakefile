@@ -22,6 +22,7 @@ nthreads=config['nthreads']
 
 
 # -- 1. Batch processing of raw CEL or BAM files
+## FIXME:: Whether CNV or Array go in the file name is assay dependent!
 rule batch_process_rawdata:
     input:
         pairs_file=os.path.join(metadata, pairs_file)
@@ -29,10 +30,12 @@ rule batch_process_rawdata:
         analysis_name=config['analysis_name'],
         array_type=config['array_type'],
         procdata=procdata,
-        reference=reference
+        reference=reference,
+        metadata=metadata,
+        rawdata=rawdata
     threads: nthreads
     output:
-        expand('{procdata}/{sample_name}/{sample_name}_{array_type}_Array_{ref_symbol}_processed.RDS', 
+        expand('{procdata}/{sample_name}/{sample_name}_{array_type}_CNV_{ref_symbol}_processed.RDS', 
             procdata=procdata, sample_name=pairs_df.SampleName, array_type=config['array_type'],
             analysis_name=config['analysis_name'], ref_symbol=ref_symbol)
     script:
