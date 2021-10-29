@@ -31,7 +31,6 @@ rule batch_process_rawdata:
         array_type=config['array_type'],
         procdata=procdata,
         reference=reference,
-        metadata=metadata,
         rawdata=rawdata
     threads: nthreads
     output:
