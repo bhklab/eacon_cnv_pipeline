@@ -12,7 +12,7 @@ nthreads: 12
 analysis_name: vdr_LMS
 
 # Where does the raw data live? This can be absolute or
-#   relative to the directory where you Snakefile is
+#   relative to the directory where your Snakefile is
 rawdata_dir: rawdata
 
 # Where does the metadata live?
@@ -25,8 +25,10 @@ procdata_dir: procdata
 results_dir: results
 
 # What type of array data?
-# Options are: CytoscanHD, CytoScan750k, Oncoscan... 
-array_type: Oncoscan
+# Options are: CytoscanHD_Array, CytoScan750k_Array, OncoScan_CNV...
+# NOTE: Be careful to match the name with the output of EaCoN or the rules will fail
+# > this includes matching case!
+array_type: OncoScan_CNV
 
 # -- Preprocessing configuration --
 
@@ -41,13 +43,13 @@ reference: BSgenome.Hsapiens.UCSC.hg19
 #   built using the metadata_dir.
 # See https://github.com/gustaveroussy/EaCoN for information
 #   on the formatting the file for different array_families
-pairs_file: 'CEL_file_pairs.tsv'
+pairs_file: CEL_file_pairs.tsv
 
 # -- Segmentation configuration --
 
 # Which segmenter should be used?
 # Options are: ASCAT, FACETS or SEQUENZA
-segmenter: 'ASCAT'
+segmenter: ASCAT
 
 # Should data smoothing be performed during segmentation; good for noisy data.
 # An integer value indicating the half-window size for winsorization. 

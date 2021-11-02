@@ -34,7 +34,7 @@ rule batch_process_rawdata:
         rawdata=rawdata
     threads: nthreads
     output:
-        expand('{procdata}/{sample_name}/{sample_name}_{array_type}_CNV_{ref_symbol}_processed.RDS', 
+        expand('{procdata}/{sample_name}/{sample_name}_{array_type}_{ref_symbol}_processed.RDS', 
             procdata=procdata, sample_name=pairs_df.SampleName, array_type=config['array_type'],
             analysis_name=config['analysis_name'], ref_symbol=ref_symbol)
     script:
@@ -44,7 +44,7 @@ rule batch_process_rawdata:
 
 rule segment_processed_data:
     input:
-        expand('{procdata}/{sample_name}/{sample_name}_{array_type}_Array_{ref_symbol}_processed.RDS', 
+        expand('{procdata}/{sample_name}/{sample_name}_{array_type}_{ref_symbol}_processed.RDS', 
             procdata=procdata, sample_name=pairs_df.SampleName, array_type=config['array_type'],
             ref_symbol=ref_symbol)
     params:
