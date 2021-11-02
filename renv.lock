@@ -412,10 +412,10 @@
     },
     "crayon": {
       "Package": "crayon",
-      "Version": "1.4.1",
+      "Version": "1.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "e75525c55c70e5f4f78c9960a4b402e9"
+      "Hash": "0a6a65d92bd45b47b94b84244b528d17"
     },
     "crosstalk": {
       "Package": "crosstalk",
