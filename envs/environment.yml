@@ -1,7 +1,7 @@
 name: affymetrix
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
@@ -224,4 +224,4 @@ dependencies:
   - zipp=3.4.0=py_0
   - zlib=1.2.11=h516909a_1010
   - zstd=1.4.5=h6597ccf_2
-prefix: /home/bioinf/miniconda3/envs/affymetrix
+prefix: /home/pharmdi/miniconda3/envs/affymetrix
