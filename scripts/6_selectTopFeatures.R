@@ -89,4 +89,21 @@ CNV_segments <- as.data.frame(mcols(CNV_gRanges_aggregated))
 CNV_ranges <- as.data.frame(CNV_gRanges_aggregated)
 rownames(CNV_segments) <- paste0(CNV_ranges$seqnames, ':', CNV_ranges$start, 
     '-', CNV_ranges$end)
-# drop rows with any
+## drop rows with any
+CNV_segments <- CNV_segments[!apply(CNV_segments, MARGIN=1, FUN=anyNA), ]
+
+# 5 -- Convert to data.table
+CNV_data <- data.table(CNV_segments, keep.rownames = TRUE)
+
+# 6 -- Calculate row variance
+CNV_data[, rowMads := rowMads(as.matrix(.SD[, -'rn']))]
+setorderv(CNV_data, col='rowMads', order=-1)
+
+# 7 -- Save data to disk
+fwrite(CNV_data[, -'rowMads'], file = output$datatable)
+
+## Save subsets of top most variant features for metaclustering
+for (i in c(seq(100, 1000, 100), 2000, 3000)) {
+    fwrite(CNV_data[seq_len(i), -'rowMads'], file=file.path(resultsDir, 
+        paste0('CNV_top_', i, '_most_variant_no_sex.csv')))
+}
