@@ -106,7 +106,7 @@ setorderv(CNV_data, col='rowMads', order=(-1))
 fwrite(CNV_data[, -'rowMads'], file=output$ranked_feature_file)
 
 ## Save subsets of top most variant features for metaclustering
-for (i in seq_along(input$feature_numbers)) {
-    fwrite(CNV_data[seq_len(input$feature_numbers[i]), -'rowMads'], 
+for (i in seq_along(params$feature_numbers)) {
+    fwrite(CNV_data[seq_len(params$feature_numbers[i]), -'rowMads'], 
         file=output$feature_number_files[i])
 }
