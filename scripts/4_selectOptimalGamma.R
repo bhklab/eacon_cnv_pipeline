@@ -76,7 +76,7 @@ segmentation_df_list <- lapply(gr.cnv, function(x) x$seg)
 
 # Convert all data.frames to GRanges and return in a list
 list_of_gRanges <- lapply(segmentation_df_list, function(x) 
-    makeGRangesFromDataFrame(x, keep.extra.columns = TRUE))
+    makeGRangesFromDataFrame(x, keep.extra.columns=TRUE))
 
 # Convert list of GRanges objects into GRangesList object
 cnv_grList <- GRangesList(list_of_gRanges)

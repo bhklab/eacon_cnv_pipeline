@@ -51,7 +51,10 @@ rule segment_processed_data:
     params:
         procdata=procdata,
         segmenter=config['segmenter'],
-        smoothk=config['smoothk']
+        smoothk=config['smoothk'],
+        nrf=config['nrf'],
+        SER_pen=config['SER_pen'],
+        BAF_filter=config['BAF_filter']
     threads: nthreads
     output:
         expand('{procdata}/{sample_name}/{segmenter}/L2R/{sample_name}.SEG.{segmenter}.RDS',
@@ -117,16 +120,18 @@ drop_sex = config['drop_sex']
 
 rule select_top_variant_features:
     input:
-        gr_list=f'{results_dir}/{analysis_name}_grList.qs'
+        gr_list=f'{results_dir}/{analysis_name}_grList.qs',
+        bins_sumexp=f'{results_dir}/{analysis_name}_bins_SumExp.qs',
+        genes_sumexp=f'{results_dir}/{analysis_name}_gene_SumExp.qs',
     params:
         feature_numbers=feature_numbers,
         drop_sex=drop_sex
     output:
         ranked_feature_file=f'{results_dir}/{analysis_name}_features_sorted_by_mad.csv',
         feature_number_files=expand(
-            '{results_dir}/{analysis_name}_{feature_number}_most_variant_regions.csv',
+            '{results_dir}/{analysis_name}_{feature_number}_most_variant_{feature_type}.csv',
             results_dir=results_dir, analysis_name=analysis_name, 
-            feature_number=feature_numbers
+            feature_number=feature_numbers, feature_type='regions'
         )
     script:
         'scripts/6_selectTopFeatures.R'

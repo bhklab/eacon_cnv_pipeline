@@ -54,7 +54,16 @@ segmenter: ASCAT
 # Should data smoothing be performed during segmentation; good for noisy data.
 # An integer value indicating the half-window size for winsorization. 
 # Larger equals more smoothing, starting around 5 is recommended.
-smoothk: 25
+smoothk: None
+
+# Should be 40 for Oncoscan, 20 for Cytoscan, 60 for SNP6 and 2-10 for WES
+SER_pen: 20
+
+# Should be 0.5 for Oncoscan and WES; 1.0 for CytoscanHD and 0.25 for SNP6
+nrf: 0.5
+
+# Should be 0.9 for Oncoscan, 0.75 for all others
+BAF_filter: 0.9
 
 # --- Copy number estimation parameters
 

@@ -2,6 +2,7 @@
 renv::activate()
 
 library(GenomicRanges)
+library(SummarizedExperiment)
 library(matrixStats)
 library(data.table)
 library(qs)
@@ -75,6 +76,8 @@ aggregateGr <- function(list.gr){
 
 # 1 -- Load the input data
 CNV_grList <- qread(input$gr_list)
+CNV_bins_sumexp <- qread(input$bins_sumexp)
+CNV_genes_sumexp <- qread(input$genes_sumexp)
 
 # 2 -- Save metadata df and drop all mcols from Granges except the segment mean
 sample_annotations <- names(CNV_grList)

@@ -11,4 +11,6 @@ output <- snakemake@output
 
 # 1 -- L2R and BAF joint segment the preprocessed data from the previous rule
 EaCoN:::Segment.ff.Batch(unlist(input), nthread=nthreads, 
-    segmenter=params$segmenter, smooth.k=params$smoothk, force=TRUE)
+    segmenter=params$segmenter, smooth.k=params$smoothk,
+    BAF.filter=params$BAF_filter, nrf=params$nrf, SER.pen=params$SER_pen
+    force=TRUE)
