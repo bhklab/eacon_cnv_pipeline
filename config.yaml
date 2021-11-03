@@ -60,3 +60,12 @@ smoothk: 25
 
 # The range of gamma values to consider when modelling allele specific copy number
 gamma_range: [0.35, 0.95]
+
+# --- Feature selection parameters
+
+# Should the sex chromosomes be removed from the feature selection?
+drop_sex: true
+
+# Creates on or more subsets of the CNV for each number in feature_numbers
+# These are selected based on ordering by row-wise median absolute deviance (mad)
+feature_numbers: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000]

@@ -40,6 +40,7 @@ rule batch_process_rawdata:
     script:
         'scripts/1_batchProcessRawdataFiles.R'
 
+
 # -- 2. L2R and BAF join segmentation
 
 rule segment_processed_data:
@@ -57,6 +58,7 @@ rule segment_processed_data:
             procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config['segmenter'])
     script:
         'scripts/2_segmentProcessedData.R'
+
 
 # -- 3. Estimate copy number using the method appropriate to the selected segmenter from the previous step
 ## TODO:: Try parallelizing in Snakemake instead of in R? Will make deploying on cluster easier
@@ -89,7 +91,7 @@ rule select_optimal_gamma:
         results=results_dir
     output:
         f'{results_dir}/{analysis_name}_grList.qs',
-        f'{procdata}/{analysis_name}optimal_gamma_list.qs'
+        f'{procdata}/{analysis_name}_optimal_gamma_list.qs'
     script:
         'scripts/4_selectOptimalGamma.R'
 
@@ -97,13 +99,34 @@ rule select_optimal_gamma:
 # -- 5. Build SummarizedExperiment
 rule build_summarized_experiments:
     input: 
-        gr_cnv=f'{procdata}/{analysis_name}optimal_gamma_list.qs',
+        gr_cnv=f'{procdata}/{analysis_name}_optimal_gamma_list.qs',
         pairs_file=os.path.join(metadata, pairs_file)
     params:
         nthreads=nthreads,
         analysis_name=analysis_name,
         results=results_dir
     output:
-        [f'{results_dir}/{analysis_name}_{feature}_SumExp.qs' for feature in ['bins', 'gene']]
+        [f'{results_dir}/{analysis_name}_{feature}_SumExp.qs' for feature 
+            in ['bins', 'gene']]
     script:
         'scripts/5_buildSummarizedExperiments.R'
+
+# -- 6. Select Top Variant Features (CNV regions)
+feature_numbers = config['feature_numbers']
+drop_sex = config['drop_sex']
+
+rule select_top_variant_features:
+    input:
+        gr_list=f'{results_dir}/{analysis_name}_grList.qs'
+    params:
+        feature_numbers=feature_numbers,
+        drop_sex=drop_sex
+    output:
+        ranked_feature_file=f'{results_dir}/{analysis_name}_features_sorted_by_mad.csv',
+        feature_number_files=expand(
+            '{results_dir}/{analysis_name}_{feature_number}_most_variant_regions.csv',
+            results_dir=results_dir, analysis_name=analysis_name, 
+            feature_number=feature_numbers
+        )
+    script:
+        'scripts/6_selectTopFeatures.R'

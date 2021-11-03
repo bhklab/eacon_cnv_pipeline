@@ -1,5 +1,5 @@
 # 0.1 -- Load dependencies
-rev::activate()
+renv::activate()
 
 library(GenomicRanges)
 library(matrixStats)
@@ -80,7 +80,7 @@ CNV_grList <- qread(input$gr_list)
 sample_annotations <- names(CNV_grList)
 CNV_grList_no_meta <- lapply(CNV_grList, function(gr) gr[, "seg.mean"])
 
-# 3 -- Aggreate segmentation results across all samples
+# 3 -- Aggregate segmentation results across all samples
 CNV_gRanges_aggregated <- aggregateGr(CNV_grList_no_meta)
 colnames(mcols(CNV_gRanges_aggregated)) <- sample_annotations
 
@@ -95,15 +95,18 @@ CNV_segments <- CNV_segments[!apply(CNV_segments, MARGIN=1, FUN=anyNA), ]
 # 5 -- Convert to data.table
 CNV_data <- data.table(CNV_segments, keep.rownames = TRUE)
 
-# 6 -- Calculate row variance
-CNV_data[, rowMads := rowMads(as.matrix(.SD[, -'rn']))]
-setorderv(CNV_data, col='rowMads', order=-1)
+# 6 -- Conditionally drop sex chromosomes
+if (params$drop_sex) CNV_data <- CNV_data[grep("chrX|chrY", rn, invert=TRUE), ]
 
-# 7 -- Save data to disk
-fwrite(CNV_data[, -'rowMads'], file = output$datatable)
+# 7 -- Calculate row variance
+CNV_data[, rowMads := rowMads(as.matrix(.SD[, -'rn']))]
+setorderv(CNV_data, col='rowMads', order=(-1))
+
+# 8 -- Save data to disk
+fwrite(CNV_data[, -'rowMads'], file=output$ranked_feature_file)
 
 ## Save subsets of top most variant features for metaclustering
-for (i in c(seq(100, 1000, 100), 2000, 3000)) {
-    fwrite(CNV_data[seq_len(i), -'rowMads'], file=file.path(resultsDir, 
-        paste0('CNV_top_', i, '_most_variant_no_sex.csv')))
+for (i in seq_along(input$feature_numbers)) {
+    fwrite(CNV_data[seq_len(input$feature_numbers[i]), -'rowMads'], 
+        file=output$feature_number_files[i])
 }
