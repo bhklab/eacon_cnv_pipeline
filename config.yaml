@@ -70,6 +70,13 @@ BAF_filter: 0.9
 # The range of gamma values to consider when modelling allele specific copy number
 gamma_range: [0.35, 0.95]
 
+# --- Quality control cut-offs
+# Minumum value of MAPD for sample inclusion
+mapd_cutoff: 
+
+# Minimum cellularity (proportion tumour) for sample inclusion
+cellularity_cutoff: 0.6
+
 # --- Feature selection parameters
 
 # Should the sex chromosomes be removed from the feature selection?
