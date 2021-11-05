@@ -114,7 +114,16 @@ rule build_summarized_experiments:
     script:
         'scripts/5_buildSummarizedExperiments.R'
 
-# -- 6. Select Top Variant Features (CNV regions)
+
+# -- 6. QC filter samples
+rule quality_control_samples:
+    input:
+    params:
+    output:
+    script:
+        'scripts/6_qualityControlSamples.R'
+
+# -- 7. Select top variant features (CNV regions)
 feature_numbers = config['feature_numbers']
 drop_sex = config['drop_sex']
 
