@@ -21,7 +21,7 @@ as described here: https://cran.r-project.org/.
 ## Setting Up Your Software Environment
 
 The first step to deploying an analysis pipeline is to install the various
-software packages it depends on. We have included the `envs/affymetrix.yml` and `renv.lock` files here to easily accomplish this.
+software packages it depends on. We have included the `envs/environment.yml` and `renv.lock` files here to easily accomplish this.
 
 All commands should be executed from the top level directory of this
 repository.
@@ -34,10 +34,10 @@ using:
 `conda env create --file envs/environment.yml`
 
 This will take some time to run as it gathers and installs the correct
-package versions. The environent it creates should be called `affymetrix`.
+package versions. The environent it creates should be called `eacon`.
 
 If it is not automatically activated after installation please run 
-`conda activate affymetrix` before proceeding to the next step.
+`conda activate eacon` before proceeding to the next step.
 
 ### R Dependencies
 
@@ -74,7 +74,7 @@ This pipeline assumes the following directory structure:
 └── scripts
 ```
 
-Please at minimum create the `rawdata` and `metadata` directories, as they are assumed to hold the raw Cytoscan HD plate data (.CEL) and the pairs file, respectively. For more information on the correct formatting for your pairs file, please see https://github.com/gustaveroussy/EaCoN.
+Please at minimum create the `rawdata` and `metadata` directories, as they are assumed to hold the raw microarray plate data (.CEL) and the pairs file, respectively. For more information on the correct formatting for your pairs file, please see https://github.com/gustaveroussy/EaCoN.
 The remaining missing directories will be created automatically as the pipeline runs.
 
 ### config.yaml
@@ -104,3 +104,11 @@ in the `config.yaml` file on what each field should contain.
 ### Build Bioconductor SummarizedExperiment Objects
 
 `snakemake --cores 2 build_summarized_experiments`
+
+### Filter Samples Based on QC Criteria
+
+`snakemake --cores 2 sample_quality_control`
+
+### Select Features of Interested Based on Median Absolute Deviance
+
+`snakemake --cores 2 select_top_variant_features`
