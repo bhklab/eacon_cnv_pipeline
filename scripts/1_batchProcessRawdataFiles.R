@@ -1,13 +1,15 @@
-# 0 -- Load dependencies
+# 0.1 -- Load dependencies
 renv::activate()
 
 library(EaCoN)
 
-# 0 -- Parse Snakemake arguments
+
+# 0.2 -- Parse Snakemake arguments
 input <- snakemake@input
 params <- snakemake@params
 nthreads <- snakemake@threads
 output <- snakemake@output
+
 
 # 1 -- Format the paths in the pairs_file to match this project directory 
 #   structure from config.yaml
@@ -24,6 +26,7 @@ pairs_df$GCChannelCel <- file.path(getwd(), params$rawdata,
 pairs_file <- file.path(tempdir(), "CEL_pairs_file.csv")
 write.table(pairs_df, file=pairs_file, sep="\t")
 
+
 # 2 -- Preprocess and normalize the raw data; does
 if (grepl('cytoscan', params$array_type, ignore.case=TRUE)) {
     CS.Process.Batch(pairs_file, 
@@ -38,5 +41,5 @@ if (grepl('cytoscan', params$array_type, ignore.case=TRUE)) {
         https://github.com/gustaveroussy/EaCoN for information on
         setting up your own analysis script.")
 } else {
-    stop("Supported array families are wes, cytoscan, oncoscan and snp6")
+    stop("Supported assay families are wes, cytoscan, oncoscan and snp6")
 }

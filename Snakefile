@@ -7,6 +7,7 @@ import numpy as np
 
 ## TODO:: Check that workflow dependencies are installed
 
+
 # -- 0.2 Load configuration files
 configfile: "config.yaml"
 
@@ -64,7 +65,7 @@ rule segment_processed_data:
 
 
 # -- 3. Estimate copy number using the method appropriate to the selected segmenter from the previous step
-## TODO:: Try parallelizing in Snakemake instead of in R? Will make deploying on cluster easier
+## TODO:: Try parallelizing in Snakemake instead of in R? Will make deploying on cluster easier'
 rule estimate_copy_number:
     input:
         expand("{procdata}/{sample_name}/{segmenter}/L2R/{sample_name}.SEG.{segmenter}.RDS",
@@ -74,9 +75,7 @@ rule estimate_copy_number:
         gamma_range=config["gamma_range"]
     threads: nthreads
     output: 
-        # expand("{procdata}/{sample_name}/{segmenter}/ASCN/gamma{gamma_value}/{sample_name}.ASCN.{segmenter}.RDS",
-        #     procdata=procdata, sample_name=pairs_df.SampleName, segmenter=config["segmenter"],
-        #     gamma_value=np.round(np.arange(config["gamma_range"][0], config["gamma_range"][1] + 0.05, 0.05), 2))
+        touch(f"prodata/estimate_copy_number.done")
     script:
         "scripts/3_estimateCopyNumber.R"
 
@@ -87,8 +86,9 @@ results_dir = config["results_dir"]
 
 rule select_optimal_gamma:
     input:
-        out_dir=procdata
+        f"prodata/estimate_copy_number.done"
     params:
+        out_dir=procdata,
         nthreads=nthreads,
         analysis_name=analysis_name,
         results=results_dir
@@ -118,19 +118,27 @@ rule build_summarized_experiments:
 # -- 6. QC filter samples
 rule sample_quality_control:
     input:
-        procdata=procdata,
-        summarized_experiments=[
-            f"{results_dir}/{analysis_name}_{feature}_SumExp.qs" 
-                for feature in ["bins", "gene"]
+        cnv_objects=[
+            *[f"{results_dir}/{analysis_name}_{feature}_SumExp.qs" 
+                for feature in ["bins", "gene"]],
+            f"{results_dir}/{analysis_name}_grList.qs"
         ]
     params:
+        procdata=procdata,
         mapd=config["mapd"],
         ndwavinesssd=config["ndwavinesssd"],
-        snpqc=config["snpqc"]
+        snpqc=config["snpqc"],
+        cellularity=config["cellularity"]
     output:
-        qc_csv=os.path.join(procdata, "sample_qc.csv")
+        qc_csv=os.path.join(procdata, "sample_qc.csv"),
+        cnv_objects=[
+            *[f"{results_dir}/{analysis_name}_{feature}_SumExp_passed_qc.qs" 
+                for feature in ["bins", "gene"]],
+            f"{results_dir}/{analysis_name}_grList_pass_qc.qs"
+        ]
     script:
         "scripts/6_sampleQualityControl.R"
+
 
 # -- 7. Select top variant features (CNV regions)
 feature_numbers = config["feature_numbers"]
@@ -152,4 +160,4 @@ rule select_top_variant_features:
             feature_number=feature_numbers, feature_type="regions"
         )
     script:
-        "scripts/6_selectTopFeatures.R"
+        "scripts/7_selectTopFeatures.R"

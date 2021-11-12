@@ -15,7 +15,7 @@ output <- snakemake@output
 
 # -- 1. Read in gamma files
 
-gammaFiles <- list.files(input$out_dir, '.*gammaEval.*txt', recursive=TRUE, 
+gammaFiles <- list.files(params$out_dir, '.*gammaEval.*txt', recursive=TRUE, 
     full.names=TRUE)
 print(gammaFiles)
 
