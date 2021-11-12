@@ -1,4 +1,4 @@
-name: affymetrix
+name: eacon
 channels:
   - conda-forge
   - bioconda

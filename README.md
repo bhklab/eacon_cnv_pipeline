@@ -13,7 +13,7 @@ For more information on Snakemake, please see: https://snakemake.readthedocs.io/
 
 Dependency management for this pipeline is handled via `conda` for Python 
 and `renv` for R. To get started with setup you can install
-miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. Please note that the EaCoN package has not been updated to work with R >= 4.0. 
+miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. Please note that this pipleine has not been updated to work with R >= 4.0.
 
 Alternatively you can install it directly from CRAN
 as described here: https://cran.r-project.org/.
@@ -31,7 +31,7 @@ repository.
 Conda can be used to install all Python and most OS system dependencies
 using:
 
-`conda env create --file envs/affymetrix.yml`
+`conda env create --file envs/environment.yml`
 
 This will take some time to run as it gathers and installs the correct
 package versions. The environent it creates should be called `affymetrix`.
