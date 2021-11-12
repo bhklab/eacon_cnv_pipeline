@@ -118,10 +118,15 @@ rule build_summarized_experiments:
 # -- 6. QC filter samples
 rule sample_quality_control:
     input:
-        procdata=procdata
+        procdata=procdata,
+        summarized_experiments=[
+            f"{results_dir}/{analysis_name}_{feature}_SumExp.qs" 
+                for feature in ["bins", "gene"]
+        ]
     params:
         mapd: config["mapd_cutoff"],
-        cellularity=config["cellularity_cutoff"]
+        ndwavinesssd: config["ndwavinesssd"],
+        snpqc: config["snpqc"]
     output:
         qc_csv=os.path.join(prodata, "sample_qc.csv")
     script:

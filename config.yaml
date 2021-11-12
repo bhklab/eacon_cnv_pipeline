@@ -26,8 +26,8 @@ results_dir: results
 
 # What type of array data?
 # Options are: CytoscanHD_Array, CytoScan750k_Array, OncoScan_CNV...
-# NOTE: Be careful to match the name with the output of EaCoN or the rules will fail
-# > this includes matching case!
+# NOTE: Be careful to match the name with the output of EaCoN or the rules will 
+#   fail this includes matching case!
 array_type: OncoScan_CNV
 
 # -- Preprocessing configuration --
@@ -54,7 +54,7 @@ segmenter: ASCAT
 # Should data smoothing be performed during segmentation; good for noisy data.
 # An integer value indicating the half-window size for winsorization. 
 # Larger equals more smoothing, starting around 5 is recommended.
-smoothk: None
+smoothk: 5
 
 # Should be 40 for Oncoscan, 20 for Cytoscan, 60 for SNP6 and 2-10 for WES
 SER_pen: 20
@@ -67,25 +67,28 @@ BAF_filter: 0.9
 
 # --- Copy number estimation parameters
 
-# The range of gamma values to consider when modelling allele specific copy number
+# The range of gamma values to consider when modelling allele specific copy 
+# number
 gamma_range: [0.35, 0.95]
 
 # --- Quality control cut-offs
 
-# Minumum value of MAPD for sample inclusion; recommendation for FFPE samples 
-# is 0.3
+# Maximum value of MAPD, metric of short-range noisiness; recommendation for 
+# FFPE samples is 0.3
 mapd_cutoff: 0.35
 
-# Minimum value of ndWavinessSD, a metric of long-range noisiness
+# Maximum value of ndWavinessSD, a metric of long-range noisiness
 ndwavinesssd: 0.3
 
-# SNPQC is a metric to evaluate the quality of BAF calls for the data; recommended
-# cut-off is above 26; for FFPE samples, this criteria may be too strict, set to 0
+# Minimum SNPQC, a metric to evaluate the quality of BAF calls for the data; 
+# recommended cut-off is above 26; for FFPE samples, this criteria may be too 
+# strict, set to 0
 snpqc: 0
 
 # Minimum cellularity (proportion tumour) for sample inclusion; set this to 0
 # if samples have already been confirmed to be pure by a pathologist
-cellularity_cutoff: 0
+# WARNING: samples with NA cellarity are dropped when cellularity > 0!
+cellularity: 0
 
 # --- Feature selection parameters
 
@@ -93,5 +96,6 @@ cellularity_cutoff: 0
 drop_sex: true
 
 # Creates on or more subsets of the CNV for each number in feature_numbers
-# These are selected based on ordering by row-wise median absolute deviance (mad)
+# These are selected based on ordering by row-wise median absolute deviance 
+# (mad)
 feature_numbers: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000]
