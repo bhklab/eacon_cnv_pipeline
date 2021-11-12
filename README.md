@@ -1,6 +1,6 @@
 # Easy Copy Number Analysis (EaCoN) Pipeline
 
-This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It leverages the `EaCoN` R package to conduct preprocessing and normalization, segmentation and copy number estimation from raw Cytoscan HD .CEL files. The `EaCoN` package also supports copy number estimation from Oncoscan, SNP6 arrays as well as WES data, however, the current pipeline has only implemented support for Cytoscan and Oncoscan based arrays.
+This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It leverages the `EaCoN` R package to conduct preprocessing and normalization, segmentation and copy number estimation from specific microarray .CEL files. The `EaCoN` package supports copy number estimation from Cytoscan, Oncoscan, SNP6 arrays as well as WES data, however, the current pipeline has only implemented support for microarray data.
 
 ## Snakemake
 

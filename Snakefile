@@ -124,11 +124,11 @@ rule sample_quality_control:
                 for feature in ["bins", "gene"]
         ]
     params:
-        mapd: config["mapd_cutoff"],
-        ndwavinesssd: config["ndwavinesssd"],
-        snpqc: config["snpqc"]
+        mapd=config["mapd"],
+        ndwavinesssd=config["ndwavinesssd"],
+        snpqc=config["snpqc"]
     output:
-        qc_csv=os.path.join(prodata, "sample_qc.csv")
+        qc_csv=os.path.join(procdata, "sample_qc.csv")
     script:
         "scripts/6_sampleQualityControl.R"
 
