@@ -71,11 +71,21 @@ BAF_filter: 0.9
 gamma_range: [0.35, 0.95]
 
 # --- Quality control cut-offs
-# Minumum value of MAPD for sample inclusion
-mapd_cutoff: 
 
-# Minimum cellularity (proportion tumour) for sample inclusion
-cellularity_cutoff: 0.6
+# Minumum value of MAPD for sample inclusion; recommendation for FFPE samples 
+# is 0.3
+mapd_cutoff: 0.35
+
+# Minimum value of ndWavinessSD, a metric of long-range noisiness
+ndwavinesssd: 0.3
+
+# SNPQC is a metric to evaluate the quality of BAF calls for the data; recommended
+# cut-off is above 26; for FFPE samples, this criteria may be too strict, set to 0
+snpqc: 0
+
+# Minimum cellularity (proportion tumour) for sample inclusion; set this to 0
+# if samples have already been confirmed to be pure by a pathologist
+cellularity_cutoff: 0
 
 # --- Feature selection parameters
 

@@ -19,3 +19,4 @@ dt_list <- lapply(qc_files, FUN=fread)
 qc_dt <- rbindlist(dt_list)
 
 # 2 -- Output the QC results
+fwrite(qc_dt, output$qc_csv)
