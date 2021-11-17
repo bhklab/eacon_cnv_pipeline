@@ -90,6 +90,20 @@ snpqc: 0
 # WARNING: samples with NA cellarity are dropped when cellularity > 0!
 cellularity: 0
 
+# ---- Custom total copy number cut-offs
+
+# copy number:log2r cut-off list
+# The names of each item are appended to the output files, to allow multiple
+#   cut-offs in a single run
+# Cut-offs are specified as ranges, with the lower range being exclusive and
+#   the upper range being inclusive (e.g., (lower, upper] in mathematical 
+#   notation)
+# NOTE: .inf range indicate no bounds (i.e., +/- infinity)
+tcn_cutoffs: {
+  50_pct: {0: [-.inf, -0.8], 1: [-0.8, -0.33], 2: [-0.33, 0.26], 3: [0.26, 0.47], 4: [0.47, .inf]},
+  90_pct: {0: [-.inf, -2.66], 1: [-2.66, -0.69], 2: [-0.69, 0.43], 3: [0.43, 0.74], 4: [0.74, .inf]}
+}
+
 # --- Feature selection parameters
 
 # Should the sex chromosomes be removed from the feature selection?
