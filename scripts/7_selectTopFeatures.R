@@ -72,7 +72,8 @@ aggregateGr <- function(list.gr){
     }
     list.gr[[1]]
 }
-
+print(input)
+cat("\n\n\n\n\n")
 
 # 1 -- Load the input data
 CNV_grList <- qread(input$gr_list)

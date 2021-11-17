@@ -15,16 +15,14 @@ output <- snakemake@output
 
 
 # 1 -- Read in Bioconductor objects
-print(input)
-cat("\n\n\n\n")
+## FIXME:: Why is the input 6 items when only 3 are specified in the Snakefile?
+input <- input[4:6]
 
 is_na_input <- is.na(unlist(input))
 if (any(!is_na_input)) {
     data_list <- setNames(lapply(input[!is_na_input], qread), 
         names(input)[!is_na_input])
 }
-#print(names(data_list))
-
 
 # 2 -- Assign custom TCN ranges
 tcn_cutoffs <- params$tcn_cutoffs
