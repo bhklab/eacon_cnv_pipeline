@@ -29,7 +29,6 @@ tcn_cutoffs <- params$tcn_cutoffs
 tcn_cutoffs <- lapply(tcn_cutoffs, function(x) x[order(names(x))])
 for (i in seq_along(data_list)) {
     object <- data_list[[i]]
-    print(names(data_list)[i])
     # parse the object log2r to a data.table
     if (is(object, "GRangesList")) {
         flat_grl <- unlist(object)
@@ -44,14 +43,12 @@ for (i in seq_along(data_list)) {
         new_col <- paste0("tcn_", names(tcn_cutoffs)[j])
         for (k in seq_along(tcn_cutoffs[[j]])) {
             cut_offs <- tcn_cutoffs[[j]][[k]]
-            print(cut_offs)
             mcol_df[
                 seg.mean > cut_offs[[1]] & seg.mean <= cut_offs[[2]],
                 (new_col) := as.numeric(names(tcn_cutoffs[[j]])[k])
             ]
         }
-        print(unique(mcol_df[[new_col]]))
-        if (!all(unique(mcol_df[[new_col]]) %in% 
+        if (!all(na.omit(unique(mcol_df[[new_col]])) %in% 
                 as.numeric(names(tcn_cutoffs[[j]])))) {
             stop("Custom copy number ranges failed to match some values!")
         }
@@ -73,10 +70,12 @@ for (i in seq_along(data_list)) {
 
 
 # 3 -- Write new objects to disk
+## FIXME:: Why is the outout 6 items when only 3 are specified in the Snakefile?
+output <- output[4:6]
 is_na_output <- is.na(unlist(output))
 if (any(!is_na_output)) {
     for (i in seq_along(data_list)) {
-        qsave(data_list[[i]], file=output[!is_na_output][i])
+        qsave(data_list[[i]], file=output[!is_na_output][[i]])
     }
 }
 
