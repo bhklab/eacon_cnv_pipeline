@@ -139,19 +139,50 @@ rule sample_quality_control:
     script:
         "scripts/6_sampleQualityControl.R"
 
+# -- 8. Use custom log2r cut-offs for calling TCN, useful if cellularity is known
+tcn_cutoffs = config["tcn_cutoffs"]
 
-# -- 7. Select top variant features (CNV regions)
+rule custom_total_copy_calls:
+    input:
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs" 
+            if len(tcn_cutoffs) > 0 else None,
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs" 
+            if len(tcn_cutoffs) > 0 else None,
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs" 
+            if len(tcn_cutoffs) > 0 else None
+    params:
+        tcn_cutoffs=tcn_cutoffs
+    output:
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs" 
+            if len(tcn_cutoffs) > 0 else None,
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs" 
+            if len(tcn_cutoffs) > 0 else None,
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs" 
+            if len(tcn_cutoffs) > 0 else None
+    script:
+        "scripts/7_customTotalCopyCalls.R"
+
+
+# -- 8. Select top variant features (CNV regions)
 feature_numbers = config["feature_numbers"]
 drop_sex = config["drop_sex"]
+feature_col = config["feature_col"]
 
 rule select_top_variant_features:
     input:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs",
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs",
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs"
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs" 
+            if len(tcn_cutoffs) == 0 
+            else f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs",
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs" 
+            if len(tcn_cutoffs) == 0 
+            else f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs",
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs" 
+            if len(tcn_cutoffs) == 0 
+            else f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs"
     params:
         feature_numbers=feature_numbers,
-        drop_sex=drop_sex
+        drop_sex=drop_sex,
+        feature_col=feature_col
     output:
         ranked_feature_file=f"{results_dir}/{analysis_name}_features_sorted_by_mad.csv",
         feature_number_files=expand(
@@ -160,21 +191,4 @@ rule select_top_variant_features:
             feature_number=feature_numbers, feature_type="regions"
         )
     script:
-        "scripts/7_selectTopFeatures.R"
-
-# -- 8. Use custom log2r cut-offs for calling TCN, useful if cellularity is known
-tcn_cutoffs = config["tcn_cutoffs"]
-
-rule custom_total_copy_calls:
-    input:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs", #if len(tcn_cutoffs) > 0 else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs", # if len(tcn_cutoffs) > 0 else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs" # if len(tcn_cutoffs) > 0 else None
-    params:
-        tcn_cutoffs=tcn_cutoffs
-    output:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs", # if len(tcn_cutoffs) > 0 else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs", # if len(tcn_cutoffs) > 0 else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs" # if len(tcn_cutoffs) > 0 else None
-    script:
-        "scripts/8_customTotalCopyCalls.R"
+        "scripts/8_selectTopFeatures.R"

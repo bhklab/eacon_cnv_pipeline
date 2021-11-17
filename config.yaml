@@ -109,6 +109,11 @@ tcn_cutoffs: {
 
 # --- Feature selection parameters
 
+# Which column contains the feature of interest? This should be either 
+#  seg.mean or TCN unless you have applied custom total copy number
+# To select a custom column, prepend tcn_ to the name of the custom cut-off
+feature_col: tcn_50_pct
+
 # Should the sex chromosomes be removed from the feature selection?
 drop_sex: true
 
