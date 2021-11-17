@@ -16,9 +16,9 @@ output <- snakemake@output
 
 # 1 -- Read in Bioconductor objects
 is_na_input <- is.na(unlist(input))
-if (!is.na(unlist(input)) {
+if (any(!is_na_input)) {
     data_list <- setNames(lapply(input[!is_na_input], qread), 
-        names(input)[!is_na_input]
+        names(input)[!is_na_input])
 }
 
 
@@ -69,6 +69,9 @@ for (i in seq_along(data_list)) {
 
 # 3 -- Write new objects to disk
 is_na_output <- is.na(unlist(output))
-for (i in seq_along(data_list)) {
-
+if (any(!is_na_output)) {
+    for (i in seq_along(data_list)) {
+        qsave(data_list[[i]], file=output[!is_na_output][i])
+    }
 }
+
