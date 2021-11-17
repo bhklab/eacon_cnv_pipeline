@@ -146,9 +146,9 @@ drop_sex = config["drop_sex"]
 
 rule select_top_variant_features:
     input:
-        gr_list=f"{results_dir}/{analysis_name}_grList.qs",
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp.qs",
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp.qs",
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs",
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs",
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs",
     params:
         feature_numbers=feature_numbers,
         drop_sex=drop_sex
@@ -167,14 +167,14 @@ tcn_cutoffs = config["tcn_cutoffs"]
 
 rule custom_total_copy_calls:
     input:
-        gr_list=f"{results_dir}/{analysis_name}_grList.qs" if len(tcn_cutoffs) else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp.qs" if len(tcn_cutoffs) else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp.qs" if len(tcn_cutoffs) else None
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs", #if len(tcn_cutoffs) > 0 else None,
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs", # if len(tcn_cutoffs) > 0 else None,
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs" # if len(tcn_cutoffs) > 0 else None
     params:
         tcn_cutoffs=tcn_cutoffs
     output:
-        gr_list=f"{results_dir}/{analysis_name}_grList_custom_tcn.qs" if len(tcn_cutoffs) else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_custom_tcn.qs" if len(tcn_cutoffs) else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_custom_tcn.qs" if len(tcn_cutoffs) else None
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs", # if len(tcn_cutoffs) > 0 else None,
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs", # if len(tcn_cutoffs) > 0 else None,
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs" # if len(tcn_cutoffs) > 0 else None
     script:
         "scripts/8_customTotalCopyCalls.R"

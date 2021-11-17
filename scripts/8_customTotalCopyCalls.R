@@ -15,11 +15,15 @@ output <- snakemake@output
 
 
 # 1 -- Read in Bioconductor objects
+print(input)
+cat("\n\n\n\n")
+
 is_na_input <- is.na(unlist(input))
 if (any(!is_na_input)) {
     data_list <- setNames(lapply(input[!is_na_input], qread), 
         names(input)[!is_na_input])
 }
+#print(names(data_list))
 
 
 # 2 -- Assign custom TCN ranges
@@ -27,6 +31,7 @@ tcn_cutoffs <- params$tcn_cutoffs
 tcn_cutoffs <- lapply(tcn_cutoffs, function(x) x[order(names(x))])
 for (i in seq_along(data_list)) {
     object <- data_list[[i]]
+    print(names(data_list)[i])
     # parse the object log2r to a data.table
     if (is(object, "GRangesList")) {
         flat_grl <- unlist(object)
@@ -37,17 +42,19 @@ for (i in seq_along(data_list)) {
             variable.name="sample", value.name="seg.mean")
     }
     # assign tcn calls to specified rangess
-    for (i in seq_along(tcn_cutoffs)) {
-        new_col <- paste0("tcn_", names(tcn_cutoffs)[i])
-        for (j in seq_along(tcn_cutoffs[[i]])) {
-            cut_offs <- tcn_cutoffs[[i]][[j]]
+    for (j in seq_along(tcn_cutoffs)) {
+        new_col <- paste0("tcn_", names(tcn_cutoffs)[j])
+        for (k in seq_along(tcn_cutoffs[[j]])) {
+            cut_offs <- tcn_cutoffs[[j]][[k]]
+            print(cut_offs)
             mcol_df[
                 seg.mean > cut_offs[[1]] & seg.mean <= cut_offs[[2]],
-                (new_col) := as.numeric(names(tcn_cutoffs[[i]])[j])
+                (new_col) := as.numeric(names(tcn_cutoffs[[j]])[k])
             ]
         }
+        print(unique(mcol_df[[new_col]]))
         if (!all(unique(mcol_df[[new_col]]) %in% 
-                as.numeric(names(tcn_cutoffs[[i]])))) {
+                as.numeric(names(tcn_cutoffs[[j]])))) {
             stop("Custom copy number ranges failed to match some values!")
         }
     }
