@@ -2,6 +2,9 @@
 
 # -- Resource configuration --
 
+# Docker image to use; converted to singularity before execution to use as non-root
+docker: docker://bhklab/eacon_cnv
+
 # Maximum number of threads to use
 nthreads: 12
 
@@ -26,15 +29,15 @@ results_dir: results
 
 # What type of array data?
 # Options are: CytoscanHD_Array, CytoScan750k_Array, OncoScan_CNV...
-# NOTE: Be careful to match the name with the output of EaCoN or the rules will 
+# NOTE: Be careful to match the name with the output of EaCoN or the rules will
 #   fail this includes matching case!
 array_type: OncoScan_CNV
 
 # -- Preprocessing configuration --
 
 # Which reference should be used?
-# Options are from BSgenome: 
-#   - for Cytoscan arrays: BSgenome.Hsapiens.UCSC.hg19 or 
+# Options are from BSgenome:
+#   - for Cytoscan arrays: BSgenome.Hsapiens.UCSC.hg19 or
 #     BSgenome.Hsapiens.UCSC.hg38
 #   - for other arrays please see https://github.com/gustaveroussy/EaCoN
 reference: BSgenome.Hsapiens.UCSC.hg19
@@ -52,7 +55,7 @@ pairs_file: CEL_file_pairs.tsv
 segmenter: ASCAT
 
 # Should data smoothing be performed during segmentation; good for noisy data.
-# An integer value indicating the half-window size for winsorization. 
+# An integer value indicating the half-window size for winsorization.
 # Larger equals more smoothing, starting around 5 is recommended.
 smoothk: 5
 
@@ -67,21 +70,21 @@ BAF_filter: 0.9
 
 # --- Copy number estimation parameters
 
-# The range of gamma values to consider when modelling allele specific copy 
+# The range of gamma values to consider when modelling allele specific copy
 # number
 gamma_range: [0.35, 0.95]
 
 # --- Quality control cut-offs
 
-# Maximum value of MAPD, metric of short-range noisiness; recommendation for 
+# Maximum value of MAPD, metric of short-range noisiness; recommendation for
 # FFPE samples is 0.3
 mapd: 0.35
 
 # Maximum value of ndWavinessSD, a metric of long-range noisiness
 ndwavinesssd: 0.3
 
-# Minimum SNPQC, a metric to evaluate the quality of BAF calls for the data; 
-# recommended cut-off is above 26; for FFPE samples, this criteria may be too 
+# Minimum SNPQC, a metric to evaluate the quality of BAF calls for the data;
+# recommended cut-off is above 26; for FFPE samples, this criteria may be too
 # strict, set to 0
 snpqc: 0
 
@@ -96,20 +99,20 @@ cellularity: 0
 # The names of each item are appended to the output files, to allow multiple
 #   cut-offs in a single run
 # Cut-offs are specified as ranges, with the lower range being exclusive and
-#   the upper range being inclusive (e.g., (lower, upper] in mathematical 
+#   the upper range being inclusive (e.g., (lower, upper] in mathematical
 #   notation)
-# NOTE: had to use 100000 instead of infinity due to bug passing inf values 
+# NOTE: had to use 100000 instead of infinity due to bug passing inf values
 #   into R scripts with Snakemake
 tcn_cutoffs: {
-  50_pct: {0: [-1000000.0, -0.8], 1: [-0.8, -0.33], 2: [-0.33, 0.26], 
+  50_pct: {0: [-1000000.0, -0.8], 1: [-0.8, -0.33], 2: [-0.33, 0.26],
     3: [0.26, 0.47], 4: [0.47, 1000000.0]},
-  90_pct: {0: [-1000000.0, -2.66], 1: [-2.66, -0.69], 2: [-0.69, 0.43], 
+  90_pct: {0: [-1000000.0, -2.66], 1: [-2.66, -0.69], 2: [-0.69, 0.43],
     3: [0.43, 0.74], 4: [0.74, 1000000.0]}
 }
 
 # --- Feature selection parameters
 
-# Which column contains the feature of interest? This should be either 
+# Which column contains the feature of interest? This should be either
 #  seg.mean or TCN unless you have applied custom total copy number
 # To select a custom column, prepend tcn_ to the name of the custom cut-off
 feature_col: tcn_50_pct
@@ -118,6 +121,6 @@ feature_col: tcn_50_pct
 drop_sex: true
 
 # Creates on or more subsets of the CNV for each number in feature_numbers
-# These are selected based on ordering by row-wise median absolute deviance 
+# These are selected based on ordering by row-wise median absolute deviance
 # (mad)
 feature_numbers: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000]

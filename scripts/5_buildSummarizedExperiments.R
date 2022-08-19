@@ -1,6 +1,4 @@
 # 0.1 -- Load Dependencies
-renv::activate()
-
 library(EaCoN)
 library(Biobase)
 library(SummarizedExperiment)
@@ -23,7 +21,7 @@ EaCoN:::buildPSetOut(gr.cnv, params$analysis_name, file.path(params$results),
 
 # 3 -- Convert ExpressionSet objects to SummarizedExperiments
 
-esetFiles <- list.files(params$results, 
+esetFiles <- list.files(params$results,
     paste0(params$analysis_name, '.*ESet..RData'), full.names=TRUE)
 
 esetNames <- list()
@@ -36,6 +34,6 @@ SEs <- lapply(esets, FUN=as, 'SummarizedExperiment')
 
 # 4 -- Save results to disk
 for (i in seq_along(SEs)) {
-    qsave(SEs[[i]], 
+    qsave(SEs[[i]],
         file=file.path(params$results, paste0(names(SEs)[i], '_SumExp.qs')))
 }

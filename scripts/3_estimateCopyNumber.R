@@ -1,6 +1,4 @@
 # 0 -- Load dependencies
-renv::activate()
-
 library(EaCoN)
 
 # 0 -- Parse Snakemake arguments
@@ -12,5 +10,5 @@ output <- snakemake@output
 # 2 -- Generate .html qc reports for
 
 # 1 -- Make copy number calls based on L2R segmentation results
-EaCoN:::ASCN.ff.Batch(unlist(input), nthread=nthreads, force=TRUE, 
+EaCoN:::ASCN.ff.Batch(unlist(input), nthread=nthreads, force=TRUE,
     gammaRange=unlist(params$gamma_range))
