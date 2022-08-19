@@ -1,6 +1,11 @@
 # Easy Copy Number Analysis (EaCoN) Pipeline
 
-This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It leverages the `EaCoN` R package to conduct preprocessing and normalization, segmentation and copy number estimation from specific microarray .CEL files. The `EaCoN` package supports copy number estimation from Cytoscan, Oncoscan, SNP6 arrays as well as WES data, however, the current pipeline has only implemented support for microarray data.
+This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN.
+It leverages the `EaCoN` R package to conduct preprocessing and normalization,
+segmentation and copy number estimation from specific microarray .CEL files.
+The `EaCoN` package supports copy number estimation from Cytoscan, Oncoscan,
+SNP6 arrays as well as WES data, however, the current pipeline has only
+implemented support for microarray data.
 
 ## Snakemake
 
@@ -11,7 +16,7 @@ For more information on Snakemake, please see: https://snakemake.readthedocs.io/
 
 ## Requirements
 
-Dependency management for this pipeline is handled via `conda` for Python 
+Dependency management for this pipeline is handled via `conda` for Python
 and `renv` for R. To get started with setup you can install
 miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. Please note that this pipleine has not been updated to work with R >= 4.0.
 
@@ -36,7 +41,7 @@ using:
 This will take some time to run as it gathers and installs the correct
 package versions. The environent it creates should be called `eacon`.
 
-If it is not automatically activated after installation please run 
+If it is not automatically activated after installation please run
 `conda activate eacon` before proceeding to the next step.
 
 ### R Dependencies
@@ -89,7 +94,7 @@ in the `config.yaml` file on what each field should contain.
 
 `snakemake --cores 2 batch_process_rawdata`
 
-### Segmentation 
+### Segmentation
 
 `snakemake --cores 2 segment_processed_data`
 
