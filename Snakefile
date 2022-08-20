@@ -5,8 +5,6 @@ import glob
 import pandas as pd
 import numpy as np
 
-## TODO:: Check that workflow dependencies are installed
-
 
 # -- 0.2 Load configuration files
 configfile: "config.yaml"
@@ -30,7 +28,7 @@ feature_numbers = config["feature_numbers"]
 drop_sex = config["drop_sex"]
 feature_col = config["feature_col"]
 
-# -- All rule, defines the final output of this pipeline and runs all necessary steps
+# -- 0.3 All rule, defines the final output of this pipeline and runs all necessary steps
 rule all:
     input:
         ranked_feature_file=f"{results_dir}/{analysis_name}_features_sorted_by_mad.csv",
@@ -61,7 +59,6 @@ rule batch_process_rawdata:
 
 
 # -- 2. L2R and BAF join segmentation
-
 rule segment_processed_data:
     input:
         expand("{procdata}/{sample_name}/{sample_name}_{array_type}_{ref_symbol}_processed.RDS",
