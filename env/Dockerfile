@@ -28,9 +28,19 @@ RUN Rscript -e "devtools::install_github( \
 )"
 
 
-## -- Dependencies for Affymetrix Oncoscan arrays
-FROM eacon-base AS eacon-oncoscan
-# Affymetrix Array files
+## -- Installed reference genomes
+FROM eacon-base AS eacon-genomes
+RUN Rscript -e " \
+pak::pkg_install(c( \
+    'BSgenome.Hsapiens.UCSC.hg19', \
+    'BSgenome.Hsapiens.UCSC.hg38', \
+    'BSgenome.Hsapiens.1000genomes.hs37d5' \
+)) \
+"
+
+
+## Shared Affymetrix array dependencies
+FROM eacon-genomes AS eacon-affymetrix
 RUN Rscript -e " \
 options(timeout=Inf); \
 install.packages(c('DBI', 'RSQLite')); \
@@ -39,7 +49,9 @@ install.packages( \
     type='src', \
     repos=NULL \
 )"
-## Affymetrix OncoScan
+
+## -- Dependencies for Affymetrix Oncoscan arrays
+FROM eacon-affymetrix AS eacon-oncoscan
 RUN Rscript -e " \
 options(timeout=Inf); \
 devtools::install_github( \
@@ -58,18 +70,7 @@ install.packages(c( \
 
 
 # -- Dependencies for Affymetrix Cytoscan 750k and HD arrays
-FROM eacon-base AS eacon-cytoscan
-# Affymetrix Array files
-RUN Rscript -e " \
-options(timeout=Inf); \
-install.packages(c('DBI', 'RSQLLite')); \
-install.packages( \
-    'https://zenodo.org/record/5494853/files/affy.CN.norm.data_0.1.2.tar.gz', \
-    type='src', \
-    repos=NULL \
-) \
-"
-## Affymetrix CytoScan
+FROM eacon-affymetrix AS eacon-cytoscan
 RUN Rscript -e " \
 options(timeout=Inf); \
 devtools::install_github( \
@@ -91,7 +92,7 @@ install.packages(c( \
 
 
 # -- Dependencies for Affymetrix SNP6 arrays
-FROM eacon-base AS eacon-snp6
+FROM eacon-genomes AS eacon-snp6
 RUN Rscript -e "devtools::install_github( \
     'gustaveroussy/apt.snp6.1.20.0' \
 )"
@@ -106,5 +107,5 @@ install.packages(c( \
 
 
 # -- Dummy rule for Whole Exome Sequencing data, which has no dependencies
-FROM eacon-base AS eacon-wes
+FROM eacon-genomes AS eacon-wes
 RUN echo "All dependencies already installed!"

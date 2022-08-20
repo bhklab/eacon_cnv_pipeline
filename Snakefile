@@ -17,12 +17,28 @@ rawdata = config["rawdata_dir"]
 metadata = config["metadata_dir"]
 procdata = config["procdata_dir"]
 pairs_file = config["pairs_file"]
+analysis_name = config["analysis_name"]
+results_dir = config["results_dir"]
 
 pairs_df = pd.read_csv(os.path.join(f"{metadata}", f"{pairs_file}"), sep="\t")
 reference = config["reference"]
 ref_symbol = reference.split(".")[-1]
 nthreads=config["nthreads"]
 
+tcn_cutoffs = config["tcn_cutoffs"]
+feature_numbers = config["feature_numbers"]
+drop_sex = config["drop_sex"]
+feature_col = config["feature_col"]
+
+# -- All rule, defines the final output of this pipeline and runs all necessary steps
+rule all:
+    input:
+        ranked_feature_file=f"{results_dir}/{analysis_name}_features_sorted_by_mad.csv",
+        feature_number_files=expand(
+            "{results_dir}/{analysis_name}_{feature_number}_most_variant_{feature_type}.csv",
+            results_dir=results_dir, analysis_name=analysis_name,
+            feature_number=feature_numbers, feature_type="regions"
+        )
 
 # -- 1. Batch processing of raw CEL or BAM files
 ## FIXME:: Whether CNV or Array go in the file name is assay dependent!
@@ -83,12 +99,10 @@ rule estimate_copy_number:
 
 
 # -- 4. Select the optimal gamma value for each sample
-analysis_name = config["analysis_name"]
-results_dir = config["results_dir"]
 
 rule select_optimal_gamma:
     input:
-        f"prodata/estimate_copy_number.done"
+        f"{procdata}/estimate_copy_number.done"
     params:
         out_dir=procdata,
         nthreads=nthreads,
@@ -141,9 +155,7 @@ rule sample_quality_control:
     script:
         "scripts/6_sampleQualityControl.R"
 
-# -- 8. Use custom log2r cut-offs for calling TCN, useful if cellularity is known
-tcn_cutoffs = config["tcn_cutoffs"]
-
+# -- 7. Use custom log2r cut-offs for calling TCN, useful if cellularity is known
 rule custom_total_copy_calls:
     input:
         gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs"
@@ -166,10 +178,6 @@ rule custom_total_copy_calls:
 
 
 # -- 8. Select top variant features (CNV regions)
-feature_numbers = config["feature_numbers"]
-drop_sex = config["drop_sex"]
-feature_col = config["feature_col"]
-
 rule select_top_variant_features:
     input:
         gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs"

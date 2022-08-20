@@ -3,7 +3,7 @@
 # -- Resource configuration --
 
 # Docker image to use; converted to singularity before execution to use as non-root
-docker: docker://bhklab/eacon_cnv
+docker: docker://bhklab/eacon-oncoscan
 
 # Maximum number of threads to use
 nthreads: 12

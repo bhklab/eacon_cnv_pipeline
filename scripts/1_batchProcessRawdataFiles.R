@@ -12,7 +12,7 @@ output <- snakemake@output
 # 1 -- Format the paths in the pairs_file to match this project directory
 #   structure from config.yaml
 pairs_df <- read.table(input$pairs_file, sep="\t")
-# remove existing path, if it is there is one
+# remove existing path, if there is one
 pairs_df$ATChannelCel <- gsub("^.*\\/", "", pairs_df$ATChannelCel)
 pairs_df$GCChannelCel <- gsub("^.*\\/", "", pairs_df$GCChannelCel)
 # create a new path relative to specified rawdata directory
