@@ -4,34 +4,35 @@ This pipeline has been adapted from https://github.com/gustaveroussy/EaCoN. It l
 
 ## Snakemake
 
-This pipeline leverages the `snakemake` Python package for workflow management. As a result the pipeline and its dependencies are easily
-installed from this repository, allowing quick setup, configuration and deployment.
+This pipeline leverages the `snakemake` Python package for workflow management.
+As a result the pipeline and its dependencies are easily
+installed from this repository, allowing quick setup, configuration and
+deployment.
 
-For more information on Snakemake, please see: https://snakemake.readthedocs.io/en/stable/.
+For more information on Snakemake, please see:
+https://snakemake.readthedocs.io/en/stable/.
 
-## Requirements
+## Software Environment
 
 Dependency management for this pipeline is handled via `conda` for Python
-and `renv` for R. To get started with setup you can install
-miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. Please note that this pipleine has not been updated to work with R >= 4.0.
-
-Alternatively you can install it directly from CRAN
-as described here: https://cran.r-project.org/.
-
-## Setting Up Your Software Environment
-
-The first step to deploying an analysis pipeline is to install the various
-software packages it depends on. We have included the `envs/environment.yml` and `renv.lock` files here to easily accomplish this.
+and `singularity` for R. To get started with setup you can install
+miniconda3 using the instructions available here:
+https://docs.conda.io/en/latest/miniconda.html.
 
 All commands should be executed from the top level directory of this
-repository.
+repository unless otherwise indicated.
 
-### Python and System Dependencies
+### Python and Snakemake
 
-Conda can be used to install all Python and most OS system dependencies
+The first step to deploying an analysis pipeline is to install Python,
+Snakemake and Singularity via `conda`. We have included the
+`envs/eacon.yml` which specifies all the requisite dependencies to use
+`snakemake` for this pipeline.
+
+You can use `conda` to install all Python and OS system dependencies
 using:
 
-`conda env create --file envs/environment.yml`
+`conda env create --file env/eacon.yml`
 
 This will take some time to run as it gathers and installs the correct
 package versions. The environent it creates should be called `eacon`.
@@ -41,74 +42,32 @@ If it is not automatically activated after installation please run
 
 ### R Dependencies
 
-The `renv` package can be used to install all R dependencies (both CRAN and
-Bioconductor). R version 3.6.3 and `renv` are included as dependencies in the `environment.yml` file and should be installed automatically when setting up your conda environment.
+R dependencies are handled via `singularity` and all rules in this
+pipeline will run within the container defined in `env/Dockerfile`.
+`Snakemake` uses `singularity` to run containerized pipelines, and this
+dependency was installed automatically via `conda` in the previous step.
 
-To initialize this project with renv run:
+We have already built the container image and pushed it to Dockerhub, so you
+shouldn't need to build it yourself locally. To run the pipeline, you do not
+need to install `docker`, however you will need it if you want to rebuild the
+image.
 
-`Rscript -e 'library(renv); renv::init()'`
+The images we have versioned for this pipeline are assay specific to minimize
+the size our our DockerHub images. The options
 
-If you wish to isolate the R dependencies from your Conda environment R libraries, you can use this command instead:
+If for some reason you cannot get the prebuilt container image to work you can
+rebuild the image using the command:
 
-`Rscript -e 'library(renv); renv::isolate(); renv::init(bare=TRUE)'`
+`docker build -f env/Dockerfile -t nci_alamanac`
 
-If intialization doesn't trigger dependency installation, you can do so manually using:
+This will build the image required for this pipeline on your local machine.
+You must then update the `container` field in `config.yaml` to point to
+the image `nci_almanac`.
 
-`Rscript -e 'renv::restore()'`
+## Deployment
 
-For more information on renv and how it can be used to manage dependencies in
-your project, please see: https://rstudio.github.io/renv/articles/renv.html.
-
-## Configuring the Pipeline
-
-This pipeline assumes the following directory structure:
-
+To run the pipeline end-to-end:
 ```
-.
-├── envs
-├── metadata
-├── procdata
-├── rawdata
-├── renv
-├── results
-└── scripts
+snakemake --cores <n_cores> --use-singularity
 ```
-
-Please at minimum create the `rawdata` and `metadata` directories, as they are assumed to hold the raw microarray plate data (.CEL) and the pairs file, respectively. For more information on the correct formatting for your pairs file, please see https://github.com/gustaveroussy/EaCoN.
-The remaining missing directories will be created automatically as the pipeline runs.
-
-### config.yaml
-
-This file hold the relevant pipeline documentation. Here you can specify the paths
-to all the parameters for your current pipeline use case. Documentation is provided
-in the `config.yaml` file on what each field should contain.
-
-## Using the Pipeline
-
-### Batch Processing and Normalization
-
-`snakemake --cores 2 batch_process_rawdata`
-
-### Segmentation
-
-`snakemake --cores 2 segment_processed_data`
-
-### Copy Number Calling
-
-`snakemake --cores 2 estimate_copy_number`
-
-### Determine Optimal Value for Gamma
-
-`snakemake --cores 2 select_optimal_gamma`
-
-### Build Bioconductor SummarizedExperiment Objects
-
-`snakemake --cores 2 build_summarized_experiments`
-
-### Filter Samples Based on QC Criteria
-
-`snakemake --cores 2 sample_quality_control`
-
-### Select Features of Interested Based on Median Absolute Deviance
-
-`snakemake --cores 2 select_top_variant_features`
+Where <n_cores> is the number of cores to parallelize over.

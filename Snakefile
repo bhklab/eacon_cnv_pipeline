@@ -80,7 +80,6 @@ rule segment_processed_data:
 
 
 # -- 3. Estimate copy number using the method appropriate to the selected segmenter from the previous step
-## TODO:: Try parallelizing in Snakemake instead of in R? Will make deploying on cluster easier'
 rule estimate_copy_number:
     input:
         expand("{procdata}/{sample_name}/{segmenter}/L2R/{sample_name}.SEG.{segmenter}.RDS",
@@ -90,13 +89,12 @@ rule estimate_copy_number:
         gamma_range=config["gamma_range"]
     threads: nthreads
     output:
-        touch(f"prodata/estimate_copy_number.done")
+        touch(f"{procdata}/estimate_copy_number.done")
     script:
         "scripts/3_estimateCopyNumber.R"
 
 
 # -- 4. Select the optimal gamma value for each sample
-
 rule select_optimal_gamma:
     input:
         f"{procdata}/estimate_copy_number.done"
