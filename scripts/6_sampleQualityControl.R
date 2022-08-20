@@ -1,6 +1,4 @@
 # 0.1 -- Load Dependencies
-renv::activate()
-
 library(EaCoN)
 library(Biobase)
 library(SummarizedExperiment)
@@ -13,7 +11,7 @@ params <- snakemake@params
 output <- snakemake@output
 
 # 1 -- Collect and parse QC data
-qc_files <- list.files(params$procdata, ".*qc.txt", full.names=TRUE, 
+qc_files <- list.files(params$procdata, ".*qc.txt", full.names=TRUE,
     recursive=TRUE)
 dt_list <- lapply(qc_files, FUN=fread)
 qc_dt <- rbindlist(dt_list)
@@ -41,13 +39,13 @@ existing_samples <- unique(Reduce(c, lapply(cnv_list, colnames)))
 keep_samples <- intersect(existing_samples, qc_dt$sample_name)
 
 # 5 -- Subset SummarizedExperiments
-.subset_by_class <- function(x, keep) { 
+.subset_by_class <- function(x, keep) {
     if (is(x, "SummarizedExperiment")) {
         x[, keep]
     } else if(is(x, "GRangesList")) {
-        x[keep] 
-    } else { 
-        stop("Unsupported object class!") 
+        x[keep]
+    } else {
+        stop("Unsupported object class!")
     }
 }
 cnv_list <- Map(f=.subset_by_class, x=cnv_list, keep=list(keep_samples))
