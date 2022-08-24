@@ -56,6 +56,7 @@ install.packages( \
     repos=NULL \
 )"
 
+
 ## -- Dependencies for Affymetrix Oncoscan arrays
 FROM eacon-affymetrix AS eacon-oncoscan
 RUN Rscript -e " \
@@ -110,6 +111,6 @@ install.packages(c( \
 )"
 
 
-# -- Dummy rule for Whole Exome Sequencing data, which has no dependencies
+# -- Dummy rule for Whole Exome Sequencing data, which has no external dependencies
 FROM eacon-genomes AS eacon-wes
 RUN echo "All dependencies already installed!"
