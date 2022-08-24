@@ -8,6 +8,7 @@ ENV R_BIOC_VERSION=${R_BIOC_VERSION}
 RUN Rscript -e "install.packages('pak')"
 # Universal EaCoN dependencies
 RUN Rscript -e "pak::pkg_install(c( \
+    'qs' \
     'XML', \
     'sequenza', \
     'affxparser', \
@@ -26,6 +27,14 @@ RUN Rscript -e " \
 RUN Rscript -e "devtools::install_github( \
     'gustaveroussy/EaCoN' \
 )"
+# Pipeline infrastructure dependencies
+RUN Rscript -e "pak::pkg_install(c( \
+    'qs', \
+    'data.table' \
+    'TxDb.Hsapiens.UCSC.hg19.knownGene', \
+    '' \
+) \
+"
 
 
 ## -- Installed reference genomes
@@ -62,7 +71,7 @@ options(timeout=Inf); \
 install.packages(c( \
     'https://zenodo.org/record/5494853/files/OncoScan.na33.r4_0.1.0.tar.gz', \
     'https://zenodo.org/record/5494853/files/OncoScanCNV.na33.r2_0.1.0.tar.gz', \
-    'https://zenodo.org/record/5494853/files/OncoScan.na36.r1_0.1.0.tar.gz', \
+    'ht tps://zenodo.org/record/5494853/files/OncoScan.na36.r1_0.1.0.tar.gz', \
     'https://zenodo.org/record/5494853/files/OncoScanCNV.na36.r1_0.1.0.tar.gz'), \
     type='src', \
     repos=NULL \

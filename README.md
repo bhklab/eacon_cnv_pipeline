@@ -47,22 +47,55 @@ pipeline will run within the container defined in `env/Dockerfile`.
 `Snakemake` uses `singularity` to run containerized pipelines, and this
 dependency was installed automatically via `conda` in the previous step.
 
-We have already built the container image and pushed it to Dockerhub, so you
-shouldn't need to build it yourself locally. To run the pipeline, you do not
+We have already built the container images and pushed them to Dockerhub, so you
+shouldn't need to build them yourself locally. To run the pipeline, you do not
 need to install `docker`, however you will need it if you want to rebuild the
 image.
 
-The images we have versioned for this pipeline are assay specific to minimize
-the size our our DockerHub images. The options
+The images we have versioned for this pipeline are assay specific tto minimize
+thier size with ensuring reproducibily and portability. To minimize the size of
+our software environments we have modularized each container to include only
+the minimum software packages to run your analysis pipeline.
 
-If for some reason you cannot get the prebuilt container image to work you can
-rebuild the image using the command:
+The image your should specify in `config.yaml` dependends on the specific assay
+your data was analyzed with. For Affymetrix arrays, the options are
+`bhklab/eacon-oncoscan` for Oncoscan CNV arrays, `bhklab/eacon-cytoscan` for
+Cytoscan 750k or HD CNV micro arrays. Additionaly, the Affymetrix SNP6
+microarray can be analyzed with `bhklab/eacon-snp6`. Finally, copy number
+from whole exome sequecning data can be processed in the `bhklab/eacon-wes`
+image.
 
-`docker build -f env/Dockerfile -t nci_alamanac`
+If for some reason you cannot get the prebuilt container images to work you can
+rebuild each images using the commands below (run in the top level directory):
 
-This will build the image required for this pipeline on your local machine.
+Oncoscan:
+```
+docker build --target <your_remote>/eacon-oncoscan -f env/Dockerfile env
+```
+
+Cytoscan:
+```
+docker build --target <your_remote>/eacon-cytoscan -f env/Dockerfile env
+```
+
+SNP6:
+```
+docker build --target <your_remote>/eacon-snp6 -f env/Dockerfile env
+```
+
+WES:
+```
+docker build --target <your_remote>/eacon-wes -f env/Dockerfile env
+```
+
+To use your new images they must be pushed to Dockerhub with:
+```
+docker push <your_remote>/eacon-<your_assay>
+```
+
+This will build the image required for the pipeline on your local machine.
 You must then update the `container` field in `config.yaml` to point to
-the image `nci_almanac`.
+the image the aforementioned assay specific Docker image.
 
 ## Deployment
 
