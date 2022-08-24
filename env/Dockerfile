@@ -8,7 +8,6 @@ ENV R_BIOC_VERSION=${R_BIOC_VERSION}
 RUN Rscript -e "install.packages('pak')"
 # Universal EaCoN dependencies
 RUN Rscript -e "pak::pkg_install(c( \
-    'qs' \
     'XML', \
     'sequenza', \
     'affxparser', \
@@ -28,11 +27,12 @@ RUN Rscript -e "devtools::install_github( \
     'gustaveroussy/EaCoN' \
 )"
 # Pipeline infrastructure dependencies
-RUN Rscript -e "pak::pkg_install(c( \
+RUN Rscript -e " \
+pak::pkg_install(c( \
     'qs', \
-    'data.table' \
     'TxDb.Hsapiens.UCSC.hg19.knownGene' \
-)"
+))"
+RUN Rscript -e "install.packages('data.table')"
 
 
 ## -- Installed reference genomes

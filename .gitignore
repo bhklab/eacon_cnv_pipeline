@@ -2,6 +2,7 @@
 rawdata/*
 procdata/*
 results/*
+metadata/*
 .snakemake
 renv/*
 .Rprofile
