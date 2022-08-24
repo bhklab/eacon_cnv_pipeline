@@ -31,10 +31,8 @@ RUN Rscript -e "devtools::install_github( \
 RUN Rscript -e "pak::pkg_install(c( \
     'qs', \
     'data.table' \
-    'TxDb.Hsapiens.UCSC.hg19.knownGene', \
-    '' \
-) \
-"
+    'TxDb.Hsapiens.UCSC.hg19.knownGene' \
+)"
 
 
 ## -- Installed reference genomes
@@ -44,8 +42,7 @@ pak::pkg_install(c( \
     'BSgenome.Hsapiens.UCSC.hg19', \
     'BSgenome.Hsapiens.UCSC.hg38', \
     'BSgenome.Hsapiens.1000genomes.hs37d5' \
-)) \
-"
+))"
 
 
 ## Shared Affymetrix array dependencies
@@ -84,8 +81,7 @@ RUN Rscript -e " \
 options(timeout=Inf); \
 devtools::install_github( \
     'gustaveroussy/apt.cytoscan.2.4.0', \
-) \
-"
+)"
 RUN Rscript -e " \
 options(timeout=Inf); \
 install.packages(c( \
@@ -96,8 +92,7 @@ install.packages(c( \
     'https://zenodo.org/record/5494853/files/rcnorm_0.1.5.tar.gz'), \
     type='src', \
     repos=NULL \
-) \
-"
+)"
 
 
 # -- Dependencies for Affymetrix SNP6 arrays
