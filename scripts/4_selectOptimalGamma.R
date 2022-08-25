@@ -49,7 +49,8 @@ vec.fits <- .fitsToVector(all.fits)
 
 # -- 3. Annotated the RDS data associated with the gamma files
 
-# Change to fix error in annotaRDS.Batch
+## FIXME:: Parameterize this!
+# Change to fix error in annotateRDS.Batch
 setwd('procdata')
 
 print('Starting annotation...')
