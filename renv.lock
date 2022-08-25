@@ -684,6 +684,12 @@
       "Repository": "CRAN",
       "Hash": "5406fd37ef0bf9b88c8a4f264d6ec220"
     },
+    "org.Hs.eg.db": {
+      "Package": "org.Hs.eg.db",
+      "Version": "3.10.0",
+      "Source": "Bioconductor",
+      "Hash": "5201dd022e5d661d2634c95fee2cea91"
+    },
     "pbapply": {
       "Package": "pbapply",
       "Version": "1.5-0",

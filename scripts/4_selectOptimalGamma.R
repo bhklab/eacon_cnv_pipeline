@@ -6,6 +6,7 @@ library(qs)
 library(GenomicRanges)
 library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 library(S4Vectors)
+library(org.Hs.eg.db)
 
 # -- 0.2 Parse snakemake arguments
 input <- snakemake@input
