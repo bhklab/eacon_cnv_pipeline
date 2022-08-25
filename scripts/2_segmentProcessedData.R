@@ -1,4 +1,5 @@
 # 0 -- Load dependencies
+renv::activate()
 library(EaCoN)
 
 # 0 -- Parse Snakemake arguments

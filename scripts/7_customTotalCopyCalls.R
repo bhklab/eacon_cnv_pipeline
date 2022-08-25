@@ -20,7 +20,7 @@ input <- input[4:6]
 
 is_na_input <- is.na(unlist(input))
 if (any(!is_na_input)) {
-    data_list <- setNames(lapply(input[!is_na_input], qread), 
+    data_list <- setNames(lapply(input[!is_na_input], qread),
         names(input)[!is_na_input])
 }
 
@@ -35,7 +35,7 @@ for (i in seq_along(data_list)) {
         mcol_df <- as.data.table(as.data.frame(mcols(flat_grl)))
     } else {
         mcol_df <- as.data.table(assays(object)$exprs, keep.rownames=TRUE)
-        mcol_df <- melt.data.table(mcol_df, id.vars="rn", 
+        mcol_df <- melt.data.table(mcol_df, id.vars="rn",
             variable.name="sample", value.name="seg.mean")
     }
     # assign tcn calls to specified rangess
@@ -48,7 +48,7 @@ for (i in seq_along(data_list)) {
                 (new_col) := as.numeric(names(tcn_cutoffs[[j]])[k])
             ]
         }
-        if (!all(na.omit(unique(mcol_df[[new_col]])) %in% 
+        if (!all(na.omit(unique(mcol_df[[new_col]])) %in%
                 as.numeric(names(tcn_cutoffs[[j]])))) {
             stop("Custom copy number ranges failed to match some values!")
         }
@@ -61,7 +61,7 @@ for (i in seq_along(data_list)) {
         new_cols <- setdiff(colnames(mcol_df), c("rn", "sample", "seg.mean"))
         for (col in new_cols) {
             new_assay <- dcast(mcol_df, rn ~ sample, value.var=col)
-            assays(object)[[col]] <- as.matrix(new_assay[, -1], 
+            assays(object)[[col]] <- as.matrix(new_assay[, -1],
                 rownames=new_assay[[1]])
         }
     }
@@ -78,4 +78,3 @@ if (any(!is_na_output)) {
         qsave(data_list[[i]], file=output[!is_na_output][[i]])
     }
 }
-

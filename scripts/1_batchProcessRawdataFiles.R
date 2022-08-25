@@ -1,4 +1,5 @@
 # 0.1 -- Load dependencies
+renv::activate()
 library(EaCoN)
 
 

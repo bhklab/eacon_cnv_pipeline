@@ -1,4 +1,5 @@
 # 0.1 -- Load Dependencies
+renv::activate()
 library(EaCoN)
 library(Biobase)
 library(SummarizedExperiment)
