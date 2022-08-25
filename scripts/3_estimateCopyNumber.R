@@ -12,4 +12,4 @@ output <- snakemake@output
 
 # 1 -- Make copy number calls based on L2R segmentation results
 EaCoN:::ASCN.ff.Batch(unlist(input), nthread=nthreads, force=TRUE,
-    gammaRange=unlist(params$gamma_range), cluster.type="FORK")
+    gammaRange=unlist(params$gamma_range))
