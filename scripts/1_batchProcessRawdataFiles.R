@@ -28,12 +28,14 @@ write.table(pairs_df, file=pairs_file, sep="\t")
 # 2 -- Preprocess and normalize the raw data; does
 if (grepl('cytoscan', params$array_type, ignore.case=TRUE)) {
     CS.Process.Batch(pairs_file,
-        nthread=nthreads, out.dir=params$procdata, force=TRUE)
+        nthread=nthreads, out.dir=params$procdata, force=TRUE,
+        cluter.type="FORK")
 } else if (grepl('oncoscan', params$array_type, ignore.case=TRUE)) {
     OS.Process.Batch(pairs_file,
-        nthread=nthreads, out.dir=params$procdata, force=TRUE)
+        nthread=nthreads, out.dir=params$procdata, force=TRUE,
+        cluster.type="FORK")
 } else if (grepl('snf6', params$array_type, ignore.care=TRUE)) {
-    SNF6.Process.Batch(pairs_file, out.dir=params$procdata)
+    SNF6.Process.Batch(pairs_file, out.dir=params$procdata, cluster.type="FORK")
 } else if (grepl('wes', params$array_type)) {
     stop("WES has not been implemented in this pipeline yet, please see
         https://github.com/gustaveroussy/EaCoN for information on

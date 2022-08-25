@@ -45,7 +45,7 @@ pak::pkg_install(c( \
 ))"
 
 
-## Shared Affymetrix array dependencies
+## -- Shared Affymetrix array dependencies
 FROM eacon-genomes AS eacon-affymetrix
 RUN Rscript -e " \
 options(timeout=Inf); \
@@ -75,6 +75,15 @@ install.packages(c( \
     repos=NULL \
 )"
 
+FROM eacon-oncoscan AS eacon-retry
+RUN Rscript -e "\
+    options(timeout=Inf); \
+    install.packages( \
+        'https://zenodo.org/record/5494853/files/affy.CN.norm.data_0.1.2.tar.gz', \
+        type='src', \
+        repos=NULL \
+    ) \
+"
 
 # -- Dependencies for Affymetrix Cytoscan 750k and HD arrays
 FROM eacon-affymetrix AS eacon-cytoscan
