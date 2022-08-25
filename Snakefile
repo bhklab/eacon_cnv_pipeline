@@ -35,7 +35,7 @@ rule batch_process_rawdata:
         rawdata=rawdata
     threads: nthreads
     output:
-        expand("{procdata}/{sample_name}/{sample_name}_{array_type}_{ref_symbol}_processed.RDS", 
+        expand("{procdata}/{sample_name}/{sample_name}_{array_type}_{ref_symbol}_processed.RDS",
             procdata=procdata, sample_name=pairs_df.SampleName, array_type=config["array_type"],
             analysis_name=config["analysis_name"], ref_symbol=ref_symbol)
     script:
@@ -46,7 +46,7 @@ rule batch_process_rawdata:
 
 rule segment_processed_data:
     input:
-        expand("{procdata}/{sample_name}/{sample_name}_{array_type}_{ref_symbol}_processed.RDS", 
+        expand("{procdata}/{sample_name}/{sample_name}_{array_type}_{ref_symbol}_processed.RDS",
             procdata=procdata, sample_name=pairs_df.SampleName, array_type=config["array_type"],
             ref_symbol=ref_symbol)
     params:
@@ -74,8 +74,8 @@ rule estimate_copy_number:
         procdata=procdata,
         gamma_range=config["gamma_range"]
     threads: nthreads
-    output: 
-        touch(f"prodata/estimate_copy_number.done")
+    output:
+        touch(f"{procdata}/estimate_copy_number.done")
     script:
         "scripts/3_estimateCopyNumber.R"
 
@@ -101,7 +101,7 @@ rule select_optimal_gamma:
 
 # -- 5. Build SummarizedExperiment
 rule build_summarized_experiments:
-    input: 
+    input:
         gr_cnv=f"{procdata}/{analysis_name}_optimal_gamma_list.qs",
         pairs_file=os.path.join(metadata, pairs_file)
     params:
@@ -109,7 +109,7 @@ rule build_summarized_experiments:
         analysis_name=analysis_name,
         results=results_dir
     output:
-        [f"{results_dir}/{analysis_name}_{feature}_SumExp.qs" for feature 
+        [f"{results_dir}/{analysis_name}_{feature}_SumExp.qs" for feature
             in ["bins", "gene"]]
     script:
         "scripts/5_buildSummarizedExperiments.R"
@@ -119,7 +119,7 @@ rule build_summarized_experiments:
 rule sample_quality_control:
     input:
         cnv_objects=[
-            *[f"{results_dir}/{analysis_name}_{feature}_SumExp.qs" 
+            *[f"{results_dir}/{analysis_name}_{feature}_SumExp.qs"
                 for feature in ["bins", "gene"]],
             f"{results_dir}/{analysis_name}_grList.qs"
         ]
@@ -132,7 +132,7 @@ rule sample_quality_control:
     output:
         qc_csv=os.path.join(procdata, "sample_qc.csv"),
         cnv_objects=[
-            *[f"{results_dir}/{analysis_name}_{feature}_SumExp_passed_qc.qs" 
+            *[f"{results_dir}/{analysis_name}_{feature}_SumExp_passed_qc.qs"
                 for feature in ["bins", "gene"]],
             f"{results_dir}/{analysis_name}_grList_pass_qc.qs"
         ]
@@ -144,20 +144,20 @@ tcn_cutoffs = config["tcn_cutoffs"]
 
 rule custom_total_copy_calls:
     input:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs" 
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs"
             if len(tcn_cutoffs) > 0 else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs" 
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs"
             if len(tcn_cutoffs) > 0 else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs" 
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs"
             if len(tcn_cutoffs) > 0 else None
     params:
         tcn_cutoffs=tcn_cutoffs
     output:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs" 
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs"
             if len(tcn_cutoffs) > 0 else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs" 
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs"
             if len(tcn_cutoffs) > 0 else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs" 
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs"
             if len(tcn_cutoffs) > 0 else None
     script:
         "scripts/7_customTotalCopyCalls.R"
@@ -170,14 +170,14 @@ feature_col = config["feature_col"]
 
 rule select_top_variant_features:
     input:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs" 
-            if len(tcn_cutoffs) == 0 
+        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs"
+            if len(tcn_cutoffs) == 0
             else f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs",
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs" 
-            if len(tcn_cutoffs) == 0 
+        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs"
+            if len(tcn_cutoffs) == 0
             else f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs",
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs" 
-            if len(tcn_cutoffs) == 0 
+        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs"
+            if len(tcn_cutoffs) == 0
             else f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs"
     params:
         feature_numbers=feature_numbers,
@@ -187,7 +187,7 @@ rule select_top_variant_features:
         ranked_feature_file=f"{results_dir}/{analysis_name}_features_sorted_by_mad.csv",
         feature_number_files=expand(
             "{results_dir}/{analysis_name}_{feature_number}_most_variant_{feature_type}.csv",
-            results_dir=results_dir, analysis_name=analysis_name, 
+            results_dir=results_dir, analysis_name=analysis_name,
             feature_number=feature_numbers, feature_type="regions"
         )
     script:
