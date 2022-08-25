@@ -26,6 +26,7 @@ feature_numbers = config["feature_numbers"]
 drop_sex = config["drop_sex"]
 feature_col = config["feature_col"]
 
+
 # -- 0.3 All rule, defines the final output of this pipeline and runs all necessary steps
 rule all:
     input:
@@ -148,10 +149,11 @@ rule sample_quality_control:
     script:
         "scripts/6_sampleQualityControl.R"
 
+
 # -- 7. Use custom log2r cut-offs for calling TCN, useful if cellularity is known
 rule custom_total_copy_calls:
     input:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs"
+        gr_list=f"{results_dir}/{analysis_name}_grList_pass_qc.qs"
             if len(tcn_cutoffs) > 0 else None,
         bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs"
             if len(tcn_cutoffs) > 0 else None,
