@@ -15,7 +15,7 @@ output <- snakemake@output
 
 # -- 1. Read in gamma files
 
-gammaFiles <- list.files(params$out_dir, '.*gammaEval.*txt', recursive=TRUE, 
+gammaFiles <- list.files(params$out_dir, '.*gammaEval.*txt', recursive=TRUE,
     full.names=TRUE)
 print(gammaFiles)
 
@@ -64,9 +64,10 @@ print('finished annotation')
 
 setwd('..')
 
+
 # Save raw results object to disk
-qsave(gr.cnv, file = file.path(input$out_dir, 
-    paste0(params$analysis_name, '_optimal_gamma_list.qs')), 
+qsave(gr.cnv, file = file.path(params$out_dir,
+    paste0(params$analysis_name, '_optimal_gamma_list.qs')),
     nthread=params$nthreads)
 
 ## ---- Create GRangesList of segmentation results and save them to disk
@@ -75,12 +76,12 @@ qsave(gr.cnv, file = file.path(input$out_dir,
 segmentation_df_list <- lapply(gr.cnv, function(x) x$seg)
 
 # Convert all data.frames to GRanges and return in a list
-list_of_gRanges <- lapply(segmentation_df_list, function(x) 
+list_of_gRanges <- lapply(segmentation_df_list, function(x)
     makeGRangesFromDataFrame(x, keep.extra.columns=TRUE))
 
 # Convert list of GRanges objects into GRangesList object
 cnv_grList <- GRangesList(list_of_gRanges)
 
 # Save GRangesList to disk for downstream analysis
-qsave(cnv_grList, file = file.path(params$results, 
+qsave(cnv_grList, file = file.path(params$results,
     paste0(params$analysis_name, '_grList.qs')), nthread=params$nthreads)
