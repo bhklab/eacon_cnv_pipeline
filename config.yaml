@@ -1,12 +1,11 @@
 # ---- Pipeline configuration ----
 
-# -- Resource configuration --
 
-# Docker image to use; converted to singularity before execution to use as non-root
-docker: docker://bhklab/eacon-retry:latest
+# -- Resource configuration --
 
 # Maximum number of threads to use
 nthreads: 12
+
 
 # -- Pipeline configuration --
 
@@ -28,7 +27,8 @@ procdata_dir: procdata
 results_dir: results
 
 # What type of array data?
-# Options are: CytoscanHD_Array, CytoScan750k_Array, OncoScan_CNV...
+
+# Options are: CytoscanHD_Array, CytoScan750k_Array, OncoScan_CNV, Genom
 # NOTE: Be careful to match the name with the output of EaCoN or the rules will
 #   fail this includes matching case!
 array_type: OncoScan_CNV

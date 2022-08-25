@@ -9,8 +9,6 @@ import numpy as np
 # -- 0.2 Load configuration files
 configfile: "config.yaml"
 
-singularity: config["docker"]
-
 rawdata = config["rawdata_dir"]
 metadata = config["metadata_dir"]
 procdata = config["procdata_dir"]

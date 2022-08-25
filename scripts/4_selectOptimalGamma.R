@@ -62,6 +62,7 @@ print('finished annotation')
 
 setwd('..')
 
+
 # Save raw results object to disk
 qsave(gr.cnv, file = file.path(input$out_dir,
     paste0(params$analysis_name, '_optimal_gamma_list.qs')),
