@@ -16,7 +16,28 @@ pairs_file = config["pairs_file"]
 analysis_name = config["analysis_name"]
 results_dir = config["results_dir"]
 
-pairs_df = pd.read_csv(os.path.join(f"{metadata}", f"{pairs_file}"), sep="\t")
+# Load the pairs file or create one if it doesn't exist
+## Note: this must be done in pipeline preamble to ensure sample names can
+## be used to define output files! Should be in .tsv format.
+if os.path.exists(os.path.join(metadata, pairs_file)):
+    pairs_df = pd.read_csv(os.path.join(metadata, pairs_file), sep="\t")
+else:
+    if re.match(".*snp.*", config["array_type"], re.IGNORECASE):
+        cel_paths = glob.glob(f"{rawdata}/**/*CEL", recursive=True)
+        pairs_df = pd.DataFrame({
+            "cel_files": cel_paths,
+            "SampleName": [re.split(r"\/|\\", path)[1] for path in cel_paths]
+        })
+        if not os.path.exists(metadata):
+            os.mkdir(metadata)
+        pairs_df.to_csv(os.path.join(metadata, pairs_file), sep="\t", index=False)
+    else:
+        raise OSError(
+                f"No pairs file found. Please create one at:\n"
+                f"\t{os.path.join(metadata, pairs_file)}"
+            )
+
+
 reference = config["reference"]
 ref_symbol = reference.split(".")[-1]
 nthreads=config["nthreads"]
@@ -45,6 +66,7 @@ rule batch_process_rawdata:
     params:
         analysis_name=config["analysis_name"],
         array_type=config["array_type"],
+        cluster_type=config["cluster_type"],
         procdata=procdata,
         reference=reference,
         rawdata=rawdata
