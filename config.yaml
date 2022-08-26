@@ -31,8 +31,8 @@ results_dir: results
 # -- What is the assay platform?
 
 # Options are: (MUST match case! Used to validate output file names)
-# - CytoscanHD, CytoScan750k for cytoscan arrays
-# - OncoScan, OncoScan_CNV for oncoscan arrays
+# - CytoscanHD or CytoScan750k for cytoscan arrays
+# - OncoScan or OncoScan_CNV for oncoscan arrays
 # - GenomeWideSNP_6 for snp6
 # - WES for Whole Exome Sequencing (not implemented yet!)
 array_type: GenomeWideSNP_6
