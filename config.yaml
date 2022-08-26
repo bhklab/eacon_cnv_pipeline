@@ -50,7 +50,7 @@ reference: BSgenome.Hsapiens.UCSC.hg19
 #   built using the metadata_dir.
 # See https://github.com/gustaveroussy/EaCoN for information
 #   on the formatting the file for different array_families
-pairs_file: pairs_df_test.tsv
+pairs_file: CEL_file_pairs.csv
 
 # -- Segmentation configuration --
 
