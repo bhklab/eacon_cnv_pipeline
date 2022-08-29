@@ -4,7 +4,7 @@
 # -- Resource configuration --
 
 # Maximum number of threads to use
-nthreads: 12
+nthreads: 10
 
 # Type of paralellization to use (FORK for Linux or PSOCK for Windows)
 cluster_type: FORK
@@ -48,9 +48,10 @@ reference: BSgenome.Hsapiens.UCSC.hg19
 
 # Name of the pairs file for the .CEL files, just the name, path will be
 #   built using the metadata_dir.
+# Must be .tsv format!
 # See https://github.com/gustaveroussy/EaCoN for information
 #   on the formatting the file for different array_families
-pairs_file: CEL_file_pairs.csv
+pairs_file: pairs_df_test.tsv
 
 # -- Segmentation configuration --
 
