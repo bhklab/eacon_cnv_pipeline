@@ -44,7 +44,7 @@ using:
 `conda env create --file env/eacon.yml`
 
 This will take some time to run as it gathers and installs the correct
-package versions. The environent it creates should be called `eacon`.
+package versions. The environment it creates should be called `eacon`.
 
 If it is not automatically activated after installation please run
 `conda activate eacon` before proceeding to the next step.
@@ -53,7 +53,7 @@ If it is not automatically activated after installation please run
 
 R dependencies are handled via `renv`  and defined in `renv.lock`.
 
-To initialize this project with renv run:
+To initialize this project with `renv` run:
 
 `Rscript -e 'library(renv); renv::init()'`
 
@@ -124,4 +124,12 @@ Instructions for running each step individually are presented below.
 
 ### Filter Samples Based on QC Criteria
 
-`snakemake --cores 2 --use-conda `
+`snakemake --cores 2 --use-conda sample_quality_control`
+
+### Use Custom Total Copy Number Cutoffs
+
+`snakemake --cores 2 --use-conda custom_total_copy_calls`
+
+### Select Top Features
+
+`snakemake --cores 2--use-conda select_top_features`
