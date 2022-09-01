@@ -17,6 +17,13 @@ output <- snakemake@output
 
 gammaFiles <- list.files(params$out_dir, '.*gammaEval.*txt', recursive=TRUE,
     full.names=TRUE)
-print(gammaFiles)
 
-gamma_df <- rbindlist(lapply(gammaFiles, FUN=fread))
+gamma_df <- rbindlist(
+    setNames(
+        lapply(gammaFiles, FUN=fread),
+        gsub(".gammaEval.txt", "", basename(gammaFiles))
+    ),
+    idcol="sample_name"
+)
+
+best_fits <- gamma_df[, .SD[which.max(GoF)], by="sample_name"]

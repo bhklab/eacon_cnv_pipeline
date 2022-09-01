@@ -74,7 +74,7 @@ This pipeline assumes the following directory structure:
 
 ```
 .
-├── envs
+├── env
 ├── metadata
 ├── procdata
 ├── rawdata
