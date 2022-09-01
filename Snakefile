@@ -41,6 +41,7 @@ else:
 reference = config["reference"]
 ref_symbol = reference.split(".")[-1]
 nthreads=config["nthreads"]
+array_type=config["array_type"]
 
 tcn_cutoffs = config["tcn_cutoffs"]
 feature_numbers = config["feature_numbers"]
@@ -57,6 +58,7 @@ rule all:
             results_dir=results_dir, analysis_name=analysis_name,
             feature_number=feature_numbers, feature_type="regions"
         )
+
 
 # -- 1. Batch processing of raw CEL or BAM files
 ## FIXME:: Whether CNV or Array go in the file name is assay dependent!
