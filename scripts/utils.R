@@ -36,7 +36,11 @@ buildGRangesFromASCNAndL2R <- function(ascn_data, l2r_data) {
 #' @md
 #' @export
 buildGRangesFromASCN <- function(ascn_data) {
-
+    ascn_segments <- ascn_data$segments_raw
+    colnames(ascn_segments) <- gsub("pos", "", colnames(ascn_segments))
+    ascn_segments$TCN <- ascn_segments$nMinor + ascn_segments$nMajor
+    granges <- GenomicRanges::makeGRangesFromDataFrame(ascn_segments,
+        keep.extra.columns=TRUE)
 }
 
 
@@ -74,6 +78,7 @@ buildGRangesFromL2R <- function(l2r_data) {
     stopifnot(
         all(unique(l2r_segments$copy_state) %in% c("normal", "gain", "loss"))
     )
+    # make the GenomicRanges object
     colnames(l2r_segments) <- c("sample", "chr", "start", "end", "probes",
         "log2r", "copy_state")
     rename_chromomsomes <- function(n) switch(n, "23"="X", "24"="Y", n)
@@ -82,6 +87,7 @@ buildGRangesFromL2R <- function(l2r_data) {
     granges <- GenomicRanges::makeGRangesFromDataFrame(l2r_segments,
         keep.extra.columns=TRUE)
     metadata(granges) <- l2r_data$meta[c("basic", "eacon")]
+    seqlevelsStyle(granges) <- "UCSC"
     return(granges)
 }
 
