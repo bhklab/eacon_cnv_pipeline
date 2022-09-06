@@ -8,16 +8,30 @@ buildGRangesFromASCNAndL2R <- function(ascn_data, l2r_data) {
 
 }
 
+#' Make a GenomicRanges object from the output of the ASCAT R package
 #'
-#'
+#' @param ascn_data `list` Output from `EaCoN::ASCN.ff` function, computed via
+#' the `ASCAT` R pacakge. See details for method information.
 #'
 #' @details
 #' Adapted from https://github.com/quevedor2/EaCoN/blob/master/R/output_builder.R.
-#' Credit to Rene Quevedo
+#' Credit to Rene Quevedo.
+#'
+#' Information about ASCAT method used to call allele specific copy number (ASCN).
+#'
+#' @references
+#' Van Loo et al. Allele-specific copy number analysis of tumors. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2947907/.
+#' Ross et al. Allele-specific multi-sample copy number segmentation in ASCAT. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8317109/
+#'
+#' @return `GenomicRanges` object, containing segment genomic co-ordinates and
+#'   associated allele specific copy number calls as well as gain/loss/normal
+#'   copy state annotations.
 #'
 #' @export
 buildGRangesFromASCN <- function(ascn_data) {
+
 }
+
 
 #'
 #'
