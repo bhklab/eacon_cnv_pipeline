@@ -8,38 +8,56 @@ buildGRangesFromASCNAndL2R <- function(ascn_data, l2r_data) {
 
 }
 
+
+
 #' Make a GenomicRanges object from the output of the ASCAT R package
 #'
 #' @param ascn_data `list` Output from `EaCoN::ASCN.ff` function, computed via
-#' the `ASCAT` R pacakge. See details for method information.
+#' the `ASCAT` R package. See details for method information.
 #'
 #' @details
 #' Adapted from https://github.com/quevedor2/EaCoN/blob/master/R/output_builder.R.
 #' Credit to Rene Quevedo.
 #'
-#' Information about ASCAT method used to call allele specific copy number (ASCN).
+#' Information about ASCAT method used to call allele specific copy number (ASCN)
+#'   is available in provided references.
 #'
 #' @references
-#' Van Loo et al. Allele-specific copy number analysis of tumors. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2947907/.
-#' Ross et al. Allele-specific multi-sample copy number segmentation in ASCAT. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8317109/
+#' Van Loo et al., 2010. Allele-specific copy number analysis of tumors. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2947907/.
+#' Ross et al., 2021. Allele-specific multi-sample copy number segmentation in ASCAT. https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8317109/
 #'
 #' @return `GenomicRanges` object, containing segment genomic co-ordinates and
-#'   associated allele specific copy number calls as well as gain/loss/normal
-#'   copy state annotations.
+#'   associated allele specific copy number calls.
 #'
+#' @authors
+#' Rene Quevedo <rene.quevedo at uhnresearch.ca>
+#' Christopher Eeles <christopher.eeles at uhnresearch.ca>
+#'
+#' @md
 #' @export
 buildGRangesFromASCN <- function(ascn_data) {
 
 }
 
 
+
+#' Make a GenomicRanges object from the segment Log2-ratios
 #'
-#'
+#' @param l2r_data `list` Output from `EaCoN::Segment.ff` function, computed via
+#'   circular binary segmentation.
 #'
 #' @details
 #' Adapted from https://github.com/quevedor2/EaCoN/blob/master/R/output_builder.R.
-#' Credit to Rene Quevedo
+#' Credit to Rene Quevedo.
 #'
+#' @return `GenomicRanges` object, containing segment genomic co-ordinates and
+#'   associated log2-ratios as well as gain/loss/normal copy state annotations.
+#'
+#' @authors
+#' Rene Quevedo <rene.quevedo at uhnresearch.ca>
+#' Christopher Eeles <christopher.eeles at uhnresearch.ca>
+#'
+#' @md
 #' @export
 buildGRangesFromL2R <- function(l2r_data) {
     # extract per segment Log2Ratio
@@ -50,8 +68,12 @@ buildGRangesFromL2R <- function(l2r_data) {
     # identify segment copy state
     gains <- l2r_segments$Log2Ratio > gain_cutoff
     losses <- l2r_segments$Log2Ratio < loss_cutoff
-    normal <- !gain & !losses
-
+    l2r_segments$copy_state <- "normal"
+    l2r_segments$copy_state[gains] <- "gain"
+    l2r_segments$copy_state[losses] <- "loss"
+    stopifnot(
+        all(unique(l2r_segments$copy_state) %in% c("normal", "gain", "loss"))
+    )
 }
 
 
