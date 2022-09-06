@@ -74,6 +74,15 @@ buildGRangesFromL2R <- function(l2r_data) {
     stopifnot(
         all(unique(l2r_segments$copy_state) %in% c("normal", "gain", "loss"))
     )
+    colnames(l2r_segments) <- c("sample", "chr", "start", "end", "probes",
+        "log2r", "copy_state")
+    rename_chromomsomes <- function(n) switch(n, "23"="X", "24"="Y", n)
+    l2r_segments$chr <- vapply(as.character(l2r_segments$chr),
+        FUN=rename_chromomsomes, FUN.VALUE=character(1))
+    granges <- GenomicRanges::makeGRangesFromDataFrame(l2r_segments,
+        keep.extra.columns=TRUE)
+    metadata(granges) <- l2r_data$meta[c("basic", "eacon")]
+    return(granges)
 }
 
 
