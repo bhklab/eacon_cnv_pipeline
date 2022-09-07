@@ -29,7 +29,8 @@ as described here: https://cran.r-project.org/.
 ## Setting Up Your Software Environment
 
 The first step to deploying an analysis pipeline is to install the various
-software packages it depends on. We have included the `envs/environment.yml` and `renv.lock` files here to easily accomplish this.
+software packages it depends on. We have included the `envs/environment.yml` and
+`renv.lock` files here to easily accomplish this.
 
 All commands should be executed from the top level directory of this
 repository unless otherwise indicated.

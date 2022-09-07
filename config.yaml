@@ -11,7 +11,7 @@ nthreads: 12
 
 # What should your analysis be called? This is prepended to all
 #   files written to disk from the pipline.
-analysis_name: vdr_LMS
+analysis_name: TCGA_LMS
 
 # Where does the raw data live? This can be absolute or
 #   relative to the directory where your Snakefile is
@@ -28,16 +28,18 @@ results_dir: results
 
 # What type of array data?
 
-# Options are: CytoscanHD_Array, CytoScan750k_Array, OncoScan_CNV, Genom
-# NOTE: Be careful to match the name with the output of EaCoN or the rules will
-#   fail this includes matching case!
-array_type: OncoScan_CNV
+# Options are:
+# - cytoscan for: CytoscanHD, CytoScan750k
+# - oncosacn for: OncoScan, OncoScan_CNV
+# - snp6 fpr: GenomeWide_SNP6
+# - wes for: Whole Exome Sequencing (not implemented yet!)
+array_type: snp6
 
 # -- Preprocessing configuration --
 
 # Which reference should be used?
 # Options are from BSgenome:
-#   - for Cytoscan arrays: BSgenome.Hsapiens.UCSC.hg19 or
+#   - for Affymetrix arrays: BSgenome.Hsapiens.UCSC.hg19 or
 #     BSgenome.Hsapiens.UCSC.hg38
 #   - for other arrays please see https://github.com/gustaveroussy/EaCoN
 reference: BSgenome.Hsapiens.UCSC.hg19
