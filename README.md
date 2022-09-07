@@ -21,7 +21,7 @@ https://snakemake.readthedocs.io/en/stable/.
 
 Dependency management for this pipeline is handled via `conda` for Python
 and `renv` for R. To get started with setup you can install
-miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html. If you do not currently have R installed, you can install it via conda using the command: `conda -c conda-forge r-base==3.6`. Please note that this pipleine has not been updated to work with R >= 4.0.
+miniconda3 using the instructions available here: https://docs.conda.io/en/latest/miniconda.html.
 
 Alternatively you can install it directly from CRAN
 as described here: https://cran.r-project.org/.
@@ -29,7 +29,7 @@ as described here: https://cran.r-project.org/.
 ## Setting Up Your Software Environment
 
 The first step to deploying an analysis pipeline is to install the various
-software packages it depends on. We have included the `envs/environment.yml` and
+software packages it depends on. We have included the `env/eacon.yml` and
 `renv.lock` files here to easily accomplish this.
 
 All commands should be executed from the top level directory of this
@@ -40,7 +40,7 @@ repository unless otherwise indicated.
 The first step to deploying an analysis pipeline is to install Python,
 Snakemake and Singularity via `conda`. We have included the
 `envs/eacon.yml` which specifies all the requisite dependencies to use
-`snakemake` for this pipeline.
+`snakemake` for this pipeline, including R.
 
 You can use `conda` to install all Python and OS system dependencies
 using:
@@ -55,22 +55,15 @@ If it is not automatically activated after installation please run
 
 ### R Dependencies
 
-R dependencies are handled via `singularity` and all rules in this
-pipeline will run within the container defined in `env/Dockerfile`.
-`Snakemake` uses `singularity` to run containerized pipelines, and this
-dependency was installed automatically via `conda` in the previous step.
+R dependencies are handled via `renv` and all rules in this
+pipeline will use the local R package cache stored in the `renv` directory.
 
-We have already built the container images and pushed them to Dockerhub, so you
-shouldn't need to build them yourself locally. To run the pipeline, you do not
-need to install `docker`, however you will need it if you want to rebuild the
-image.
+To install all R dependencies run:
 
-The images we have versioned for this pipeline are assay specific tto minimize
-thier size with ensuring reproducibily and portability. To minimize the size of
-our software environments we have modularized each container to include only
-the minimum software packages to run your analysis pipeline.
+`Rscript -e 'library(renv); renv::init();'`
 
-If you wish to isolate the R dependencies from your Conda environment R libraries, you can use this command instead:
+If you wish to isolate the R dependencies from your Conda environment R libraries,
+you can use this command instead:
 
 `Rscript -e 'library(renv); renv::isolate(); renv::init(bare=TRUE)'`
 
@@ -105,43 +98,55 @@ This file hold the relevant pipeline documentation. Here you can specify the pat
 to all the parameters for your current pipeline use case. Documentation is provided
 in the `config.yaml` file on what each field should contain.
 
+
 ## Using the Pipeline
 
-### Batch Processing and Normalization
-
-`snakemake --cores 2 batch_process_rawdata`
-
-### Segmentation
-
-`snakemake --cores 2 segment_processed_data`
-
-### Copy Number Calling
-
-`snakemake --cores 2 estimate_copy_number`
-
-### Determine Optimal Value for Gamma
-
-`snakemake --cores 2 select_optimal_gamma`
-
-### Build Bioconductor SummarizedExperiment Objects
-
-`snakemake --cores 2 build_summarized_experiments`
-
-### Filter Samples Based on QC Criteria
-
-To use your new images they must be pushed to Dockerhub with:
-```
-docker push <your_remote>/eacon-<your_assay>
-```
-
-This will build the image required for the pipeline on your local machine.
-You must then update the `container` field in `config.yaml` to point to
-the image the aforementioned assay specific Docker image.
-
-## Deployment
+### Deployment
 
 To run the pipeline end-to-end:
 ```
-snakemake --cores <n_cores> --use-singularity
+snakemake --cores <n_cores> --use-conda
 ```
 Where <n_cores> is the number of cores to parallelize over.
+
+For details on deploying this pipleine via your local HPC cluster or in
+the cloud, please consult the Snakemake documentation. Deployment to these
+platforms requires minimal additional configuration.
+
+### Individual Rules
+
+The pipeline can also be run rule by rule using the rule names.
+
+#### Batch Processing and Normalization
+
+`snakemake --cores 2 --use-conda batch_process_rawdata`
+
+#### Segmentation
+
+`snakemake --cores 2 --use-conda segment_processed_data`
+
+#### Copy Number Calling
+
+`snakemake --cores 2 --use-conda estimate_copy_number`
+
+#### Determine Optimal Value for Gamma
+
+`snakemake --cores 2 --use-conda select_optimal_gamma`
+
+#### Build Bioconductor SummarizedExperiment Objects
+
+`snakemake --cores 2 --use-conda build_summarized_experiments`
+
+#### Filter Samples Based on QC Criteria
+
+`snakemake --cores 2 --use-conda sample_quality_control`
+
+#### Build R SummarizedExperiment Objecst
+
+`snakemake --cores 2 --use-conda custom_total_copy_calls`
+
+#### Select Top Most Variant Features
+
+For downstream analysis.
+
+`snakemake --cores 2 --use-conda select_top_variant_features`
