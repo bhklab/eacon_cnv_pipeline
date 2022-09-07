@@ -1,11 +1,22 @@
-#' Create a GenomicRanges object from
+#' Create a GenomicRanges object from the output of segmentation and
+#' allele-specific copy number estimation
 #'
-#' @param ascn_data `list`
-#' @param l2r_data `list`
+#' @param ascn_data `list` Output from `EaCoN::ASCN.ff` function, computed via
+#'   the `ASCAT` R package.
+#' @param l2r_data `list` Output from `EaCoN::Segment.ff` function, computed via
+#'   circular binary segmentation.
+#'
+#' @details
+#' See `?buildGRangesFromL2R` and `buildGRangesFromASCN` for details of
+#' GenomicRange creation. This helper method simply calls `merge` on the
+#' `GRange` objecst returned each function call.
 #'
 #' @export
 buildGRangesFromASCNAndL2R <- function(ascn_data, l2r_data) {
-
+    l2r_granges <- buildGRangesFromL2R(l2r_data)
+    ascn_granges <- buildGRangesFromASCN(ascn_data)
+    cnv_granges <- merge(l2r_granges, ascn_granges)
+    return(cnv_granges)
 }
 
 
@@ -36,11 +47,16 @@ buildGRangesFromASCNAndL2R <- function(ascn_data, l2r_data) {
 #' @md
 #' @export
 buildGRangesFromASCN <- function(ascn_data) {
+    # build the GenomicRanges object
     ascn_segments <- ascn_data$segments_raw
     colnames(ascn_segments) <- gsub("pos", "", colnames(ascn_segments))
     ascn_segments$TCN <- ascn_segments$nMinor + ascn_segments$nMajor
     granges <- GenomicRanges::makeGRangesFromDataFrame(ascn_segments,
         keep.extra.columns=TRUE)
+    # unify chromosome nomenclature
+    seqlevels(granges) <- c(1:22, "X", "Y")
+    seqlevelsStyle(granges) <- "UCSC"
+    return(granges)
 }
 
 
@@ -87,6 +103,8 @@ buildGRangesFromL2R <- function(l2r_data) {
     granges <- GenomicRanges::makeGRangesFromDataFrame(l2r_segments,
         keep.extra.columns=TRUE)
     metadata(granges) <- l2r_data$meta[c("basic", "eacon")]
+    # unify chromosome nomenclature
+    seqlevels(granges) <- c(1:22, "X", "Y")
     seqlevelsStyle(granges) <- "UCSC"
     return(granges)
 }
