@@ -20,7 +20,6 @@ buildGRangesFromASCNAndL2R <- function(ascn_data, l2r_data) {
 }
 
 
-
 #' Make a GenomicRanges object from the output of the ASCAT R package
 #'
 #' @param ascn_data `list` Output from `EaCoN::ASCN.ff` function, computed via
@@ -58,7 +57,6 @@ buildGRangesFromASCN <- function(ascn_data) {
     seqlevelsStyle(granges) <- "UCSC"
     return(granges)
 }
-
 
 
 #' Make a GenomicRanges object from the segment Log2-ratios
@@ -115,6 +113,22 @@ buildGRangesFromL2R <- function(l2r_data) {
 #'
 #'
 #' @export
-annotateGRangesWithTxDB <- function(granges, txdb) {
+annotateGRangesWithTxDB <- function(granges, txdb, keytype="ENTREZID", ...) {
+    if (!require(org.Hs.eg.db)) stop("Please install org.Hs.eg.db!")
+    gene_annot <- genes(txdb)
+    olaps <- as.data.frame(findOverlaps(granges, gene_annot))
+    gene_ids <- gene_annot$gene_id[olaps$subjectHits]
+    cols <- c("ENSEMBL", "ENTREZID", "SYMBOL")
+    gene_labels <- select(org.Hs.eg.db, keys=gene_ids, keytype=keytype,
+        columns=cols, multi="first")
+    .paste_or <- function(x) paste0(unique(x), collapse="|")
+    segment_genes <- data.frame(gene_id=gene_ids, segment=olaps$queryHits)
+    segment_genes <- merge(segment_genes, gene_labels, by.x="gene_id",
+        by.y=keytype, all.x=TRUE)
+    colnames(segment_genes)[colnames(segment_genes)  == "gene_id"] <- keytype
+    segment_genes <- aggregate(segment_genes, FUN=.paste_or,
+        by=list(segment_genes$segment))
+
+
 
 }
