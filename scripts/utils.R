@@ -114,7 +114,10 @@ buildGRangesFromL2R <- function(l2r_data) {
 #'
 #' @export
 annotateGRangesWithTxDB <- function(granges, txdb, keytype="ENTREZID", ...) {
+    # validate input
     if (!require(org.Hs.eg.db)) stop("Please install org.Hs.eg.db!")
+    stopifnot(is(granges, "GRanges") && is(txdb, "TxDb"))
+    #
     gene_annot <- genes(txdb)
     olaps <- as.data.frame(findOverlaps(granges, gene_annot))
     gene_ids <- gene_annot$gene_id[olaps$subjectHits]
@@ -131,4 +134,38 @@ annotateGRangesWithTxDB <- function(granges, txdb, keytype="ENTREZID", ...) {
 
 
 
+}
+
+
+#' Uses the chromosome lengths from a BSGenome to divide chromosomes into equal
+#' sized bins
+#'
+#' @param bin_size `integer(1)` Size of the bins to split chromosomes into.
+#' Default is `50000L`.
+#' @param seq_style `character(1)` Chromosome naming style. Default is "UCSC".
+#'
+#' @return `GRanges` object with each chromosome divided into bins of size
+#' `bin_size`.
+#'
+#' @export
+getWindowedBed <- function(bin_size=50000L, seq_style="UCSC"){
+    if (!require(BSgenome.Hsapiens.UCSC.hg19))
+        stop("Please install BSgenome.Hsapiens.UCSC.hg19")
+    chrs <- seqlengths(BSgenome.Hsapiens.UCSC.hg19)[paste0("chr", c(1:22,"X", "Y"))]
+
+    ## Construct intervals across the genome of a certain bin size
+    start_points <- seq(1, 500000000, by=bin_size)
+    grList <- lapply(names(chrs), function(chr_id){
+        chr <- chrs[chr_id]
+        iranges <- IRanges(start=start_points[start_points < chr], width=bin_size)
+        end(iranges[length(iranges),]) <- chr
+        granges <- GRanges(seqnames = chr_id, iranges)
+        granges
+    })
+
+    ## Assemble all GRanges and set seq level style
+    grList <- as(grList, "GRangesList")
+    suppressWarnings(seqlevelsStyle(grList) <- seq.style)
+    granges <- unlist(grList)
+    return(granges)
 }

@@ -48,9 +48,9 @@ l2r_files <- Map(
 
 
 # -- 3. Load the best fit ASCN and L2R data and build GRanges objects
-ascn_data <- BiocParallel::bplapply(best_fit_files, FUN=readRDS)
-l2r_data <- BiocParallel::bplapply(l2r_files, FUN=readRDS)
+ascn_data_list <- BiocParallel::bplapply(best_fit_files, FUN=readRDS)
+l2r_data_list <- BiocParallel::bplapply(l2r_files, FUN=readRDS)
 
-grList <- Map(f=buildGRangesFromASCNAndL2R, ascn_data, l2r_data)
+grList <- Map(f=buildGRangesFromASCNAndL2R, ascn_data_list, l2r_data_list)
 
 # -- 4. Annotation GRanges objects using a TxDB object
