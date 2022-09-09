@@ -109,36 +109,54 @@ buildGRangesFromL2R <- function(l2r_data) {
 
 
 
+#' Add gene annotations to a GRanges object using a TxDB object
 #'
+#' @description
+#' Annotates the ranges with Ensembl, Entrez and Hugo Symbol based on the
+#' genomic co-ordinates in the GRanges object. Ranges with more the one feature
+#' are collapsed into a single string delimited with "|".
 #'
+#' @param granges `GRanges`
+#' @param txdb `TxDB`
+#' @param keytype `character(1)` The identifier column name from `Org.hs.eg.db`
+#' which corresponds to the `gene_id` column of `genes(txdb)`. Default is
+#' "ENTREZID", which is the identifier
 #'
+#' @return `GRanges` Original object with mapped gene annotations added as
+#' metadata columns.
+#'
+#' @import org.Hs.eg.db
 #' @export
 annotateGRangesWithTxDB <- function(granges, txdb, keytype="ENTREZID", ...) {
     # validate input
     if (!require(org.Hs.eg.db)) stop("Please install org.Hs.eg.db!")
     stopifnot(is(granges, "GRanges") && is(txdb, "TxDb"))
-    #
+    # extract the gene annotations from the TxDB object
     gene_annot <- genes(txdb)
+    # intersect with the genomic ranges object
     olaps <- as.data.frame(findOverlaps(granges, gene_annot))
+    # retrieve additional gene annotations from org.Hs.eg.db
     gene_ids <- gene_annot$gene_id[olaps$subjectHits]
     cols <- c("ENSEMBL", "ENTREZID", "SYMBOL")
     gene_labels <- select(org.Hs.eg.db, keys=gene_ids, keytype=keytype,
         columns=cols, multi="first")
-    .paste_or <- function(x) paste0(unique(x), collapse="|")
+    # merge additional annotations with TxDB annotations
+    .paste_or <- function(x) if (!all(is.na(x))) paste0(unique(na.omit(x)), collapse="|") else unique(x)
     segment_genes <- data.frame(gene_id=gene_ids, segment=olaps$queryHits)
     segment_genes <- merge(segment_genes, gene_labels, by.x="gene_id",
         by.y=keytype, all.x=TRUE)
     colnames(segment_genes)[colnames(segment_genes)  == "gene_id"] <- keytype
-    segment_genes <- aggregate(segment_genes, FUN=.paste_or,
-        by=list(segment_genes$segment))
-
-
-
+    # collapse multiple features per GRanges segment
+    segment_genes <- aggregate(segment_genes[, -2], FUN=.paste_or,
+        by=list(segment=segment_genes$segment))
+    # add metadata for segments with gene annotations
+    mcols(granges)[segment_genes$segment, colnames(segment_genes[, -1])] <- segment_genes[, -1]
+    return(granges)
 }
 
 
-#' Uses the chromosome lengths from a BSGenome to divide chromosomes into equal
-#' sized bins
+#' Uses the chromosome lengths from a BSGenome to divide al chromosomes in the
+#' genome into equal sized bins.
 #'
 #' @param bin_size `integer(1)` Size of the bins to split chromosomes into.
 #' Default is `50000L`.
@@ -147,14 +165,15 @@ annotateGRangesWithTxDB <- function(granges, txdb, keytype="ENTREZID", ...) {
 #' @return `GRanges` object with each chromosome divided into bins of size
 #' `bin_size`.
 #'
+#' @import BSgenome.Hsapiens.UCSC.hg19
 #' @export
-getWindowedBed <- function(bin_size=50000L, seq_style="UCSC"){
-    if (!require(BSgenome.Hsapiens.UCSC.hg19))
-        stop("Please install BSgenome.Hsapiens.UCSC.hg19")
-    chrs <- seqlengths(BSgenome.Hsapiens.UCSC.hg19)[paste0("chr", c(1:22,"X", "Y"))]
+binReferenceGenome <- function(bin_size=50000L, seq_style="UCSC", reference="BSgenome.Hsapiens.UCSC.hg19"){
+    if (!require(reference, character.only=TRUE))
+        stop("Please install ", reference)
+    chrs <- seqlengths(get(reference))[paste0("chr", c(1:22,"X", "Y"))]
 
     ## Construct intervals across the genome of a certain bin size
-    start_points <- seq(1, 500000000, by=bin_size)
+    start_points <- seq(1, max(chrs), by=bin_size)
     grList <- lapply(names(chrs), function(chr_id){
         chr <- chrs[chr_id]
         iranges <- IRanges(start=start_points[start_points < chr], width=bin_size)
@@ -165,7 +184,7 @@ getWindowedBed <- function(bin_size=50000L, seq_style="UCSC"){
 
     ## Assemble all GRanges and set seq level style
     grList <- as(grList, "GRangesList")
-    suppressWarnings(seqlevelsStyle(grList) <- seq.style)
+    suppressWarnings(seqlevelsStyle(grList) <- seq_style)
     granges <- unlist(grList)
     return(granges)
 }

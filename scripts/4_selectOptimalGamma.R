@@ -8,6 +8,7 @@ library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 library(S4Vectors)
 library(org.Hs.eg.db)
 library(BiocParallel)
+library(RaggedExperiment)
 
 # -- 0.2 Parse snakemake arguments
 input <- snakemake@input
@@ -51,6 +52,13 @@ l2r_files <- Map(
 ascn_data_list <- BiocParallel::bplapply(best_fit_files, FUN=readRDS)
 l2r_data_list <- BiocParallel::bplapply(l2r_files, FUN=readRDS)
 
-grList <- Map(f=buildGRangesFromASCNAndL2R, ascn_data_list, l2r_data_list)
+gr_list <- GRangesList(
+    Map(f=buildGRangesFromASCNAndL2R, ascn_data_list, l2r_data_list)
+)
+# removing directory paths
+names(gr_list) <- basename(names(gr_list))
 
-# -- 4. Annotation GRanges objects using a TxDB object
+# -- 4. Construct a RaggedExperiment object
+ragged_exp <- as(gr_list, "RaggedExperiment")
+
+genome_bins <- binReferenceGenome()
