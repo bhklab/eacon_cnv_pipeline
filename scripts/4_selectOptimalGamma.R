@@ -1,14 +1,7 @@
 # 0.1 Load dependencies
 renv::activate()
-library(EaCoN)
 library(data.table)
-library(qs)
-library(GenomicRanges)
-library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-library(S4Vectors)
-library(org.Hs.eg.db)
-library(BiocParallel)
-library(RaggedExperiment)
+
 
 # -- 0.2 Parse snakemake arguments
 input <- snakemake@input
@@ -34,31 +27,5 @@ gamma_df <- rbindlist(
 # -- 2. Select the best fits
 best_fits <- gamma_df[, .SD[which.max(GoF)], by="sample_name"]
 
-best_fit_files <- Map(
-    function(x, y)
-        grep(pattern=y, list.files(x, recursive=TRUE, full.names=TRUE), value=TRUE),
-    x=file.path(params$out_dir, best_fits$sample_name),
-    y=paste0(".*gamma", sprintf("%.2f", best_fits$gamma), "/.*RDS$")
-)
-l2r_files <- Map(
-    function(x, y)
-        grep(pattern=y, list.files(x, recursive=TRUE, full.names=TRUE), value=TRUE),
-    x=file.path(params$out_dir, best_fits$sample_name),
-    y=".*L2R/.*RDS$"
-)
-
-
-# -- 3. Load the best fit ASCN and L2R data and build GRanges objects
-ascn_data_list <- BiocParallel::bplapply(best_fit_files, FUN=readRDS)
-l2r_data_list <- BiocParallel::bplapply(l2r_files, FUN=readRDS)
-
-gr_list <- GRangesList(
-    Map(f=buildGRangesFromASCNAndL2R, ascn_data_list, l2r_data_list)
-)
-# removing directory paths
-names(gr_list) <- basename(names(gr_list))
-
-# -- 4. Construct a RaggedExperiment object
-ragged_exp <- as(gr_list, "RaggedExperiment")
-
-genome_bins <- binReferenceGenome()
+# -- 3. Save the best fit data.frame to csv
+fwrite(best_fits, file=output[2])

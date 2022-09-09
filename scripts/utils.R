@@ -138,10 +138,13 @@ annotateGRangesWithTxDB <- function(granges, txdb, keytype="ENTREZID", ...) {
     # retrieve additional gene annotations from org.Hs.eg.db
     gene_ids <- gene_annot$gene_id[olaps$subjectHits]
     cols <- c("ENSEMBL", "ENTREZID", "SYMBOL")
-    gene_labels <- select(org.Hs.eg.db, keys=gene_ids, keytype=keytype,
+    gene_labels <- select(org.Hs.eg.db, keys=unique(gene_ids), keytype=keytype,
         columns=cols, multi="first")
     # merge additional annotations with TxDB annotations
     .paste_or <- function(x) if (!all(is.na(x))) paste0(unique(na.omit(x)), collapse="|") else unique(x)
+    gene_labels <- aggregate(gene_labels[, -1], FUN=.paste_or,
+        by=list(gene_id=gene_labels[[1]]))
+    colnames(gene_labels)[1] <- keytype
     segment_genes <- data.frame(gene_id=gene_ids, segment=olaps$queryHits)
     segment_genes <- merge(segment_genes, gene_labels, by.x="gene_id",
         by.y=keytype, all.x=TRUE)
