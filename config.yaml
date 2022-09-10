@@ -114,10 +114,3 @@ tcn_cutoffs: {
   90_pct: {0: [-1000000.0, -2.66], 1: [-2.66, -0.69], 2: [-0.69, 0.43],
     3: [0.43, 0.74], 4: [0.74, 1000000.0]}
 }
-
-# --- Feature selection parameters
-
-# Which column contains the feature of interest? This should be either
-#  log2r or TCN unless you have applied custom total copy number
-# To select a custom column, prepend tcn_ to the name of the custom cut-off
-feature_col: tcn_50_pct

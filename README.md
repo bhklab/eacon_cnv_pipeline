@@ -135,18 +135,8 @@ The pipeline can also be run rule by rule using the rule names.
 
 #### Build Bioconductor SummarizedExperiment Objects
 
-`snakemake --cores 2 --use-conda build_summarized_experiments`
+`snakemake --cores 2 --use-conda build_ragged_experiment`
 
 #### Filter Samples Based on QC Criteria
 
 `snakemake --cores 2 --use-conda sample_quality_control`
-
-#### Build R SummarizedExperiment Objecst
-
-`snakemake --cores 2 --use-conda custom_total_copy_calls`
-
-#### Select Top Most Variant Features
-
-For downstream analysis.
-
-`snakemake --cores 2 --use-conda select_top_variant_features`
