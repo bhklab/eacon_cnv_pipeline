@@ -42,8 +42,8 @@ l2r_files <- Map(
     buildGRangesFromASCNAndL2R(ascn_data, l2r_data)
 }
 
-BPPARAM <- bpparam()
-bpnthreads(BPPARAM) <- params$nthreads
+BPPARAM <- BiocParallel::bpparam()
+BiocParallel::bpnworkers(BPPARAM) <- params$nthreads
 gr_list <- BiocParallel::bpmapply(.build_granges_from_cnv,
     best_fit_files, l2r_files,
     SIMPLIFY=FALSE, USE.NAMES=TRUE, BPPARAM=BPPARAM
