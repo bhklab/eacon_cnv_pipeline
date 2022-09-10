@@ -26,14 +26,15 @@ ragged_exp <- qread(input$ragged_exp)
 
 # 4 -- Identify samples passing QC
 qc_dt <- qc_dt[
-    MAPD < params$mapd & `waviness-sd` < params$ndwavinesssd &
-        SNPQC > params$snpqc,
+    MAPD <= params$mapd & `waviness-sd` <= params$ndwavinesssd &
+        SNPQC >= params$snpqc,
 ]
 if (params$cellularity > 0) {
     if ("TUSCAN-cellularity" %in% colnames(qcdt))
-        qc_dt <- qc_dt[`TUSCAN-cellularity` > params$cellularity]
+        qc_dt <- qc_dt[`TUSCAN-cellularity` >= params$cellularity]
 }
 keep_samples <- intersect(colnames(ragged_exp), qc_dt$sample_name)
+print(keep_samples)
 
 # 5 -- Subset RaggedExperiment
 ragged_exp <- ragged_exp[, keep_samples]
