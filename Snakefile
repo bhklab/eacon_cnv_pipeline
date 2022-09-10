@@ -150,16 +150,17 @@ rule build_ragged_experiment:
 # -- 6. QC filter samples
 rule sample_quality_control:
     input:
-        f"{results_dir}/{analysis_name}_RagExp.qs"
+        ragged_exp=f"{results_dir}/{analysis_name}_RagExp.qs"
     params:
         procdata=procdata,
+        nthreads=nthreads,
         mapd=config["mapd"],
         ndwavinesssd=config["ndwavinesssd"],
         snpqc=config["snpqc"],
         cellularity=config["cellularity"]
     output:
         qc_csv=os.path.join(procdata, "sample_qc.csv"),
-        cnv_objects=f"{results_dir}/{analysis_name}_RagExp_pass_qc.qs"
+        ragged_exp=f"{results_dir}/{analysis_name}_RagExp_pass_qc.qs"
     script:
         "scripts/6_sampleQualityControl.R"
 
