@@ -9,7 +9,7 @@ library(org.Hs.eg.db)
 library(BiocParallel)
 library(RaggedExperiment)
 
-# 0.2 -- Parse snakemake parameters
+# -- 0.2 Parse snakemake parameters
 input <- snakemake@input
 params <- snakemake@params
 output <- snakemake@output

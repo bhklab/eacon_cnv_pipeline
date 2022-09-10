@@ -28,4 +28,4 @@ gamma_df <- rbindlist(
 best_fits <- gamma_df[, .SD[which.max(GoF)], by="sample_name"]
 
 # -- 3. Save the best fit data.frame to csv
-fwrite(best_fits, file=output[2])
+fwrite(best_fits, file=output[[1]])

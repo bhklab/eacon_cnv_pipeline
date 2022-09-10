@@ -127,8 +127,7 @@ rule select_optimal_gamma:
         analysis_name=analysis_name,
         results=results_dir
     output:
-        f"{results_dir}/{analysis_name}_grList.qs",
-        f"{procdata}/{analysis_name}_optimal_gamma_list.qs"
+        f"{procdata}/{analysis_name}_optimal_gamma.csv"
     script:
         "scripts/4_selectOptimalGamma.R"
 
