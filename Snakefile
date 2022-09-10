@@ -43,9 +43,7 @@ ref_symbol = reference.split(".")[-1]
 nthreads=config["nthreads"]
 array_type=config["array_type"]
 
-tcn_cutoffs = NULL
-feature_numbers = config["feature_numbers"]
-drop_sex = config["drop_sex"]
+tcn_cutoffs = config["tcn_cutoffs"]
 feature_col = config["feature_col"]
 
 

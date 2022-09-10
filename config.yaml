@@ -51,7 +51,7 @@ reference: BSgenome.Hsapiens.UCSC.hg19
 # Must be .tsv format!
 # See https://github.com/gustaveroussy/EaCoN for information
 #   on the formatting the file for different array_families
-pairs_file: pairs_df_test.tsv
+pairs_file: CEL_file_pairs.tsv
 
 # -- Segmentation configuration --
 

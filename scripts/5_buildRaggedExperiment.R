@@ -35,17 +35,25 @@ l2r_files <- Map(
 )
 
 # -- 3. Load the best fit ASCN and L2R data and build GRanges objects
-ascn_data_list <- BiocParallel::bplapply(best_fit_files, FUN=readRDS)
-l2r_data_list <- BiocParallel::bplapply(l2r_files, FUN=readRDS)
 
-gr_list <- GRangesList(
-    Map(f=buildGRangesFromASCNAndL2R, ascn_data_list, l2r_data_list)
+.build_granges_from_cnv <- function(ascn, l2r) {
+    ascn_data <- readRDS(ascn)
+    l2r_data <- readRDS(l2r)
+    buildGRangesFromASCNAndL2R(ascn_data, l2r_data)
+}
+
+BPPARAM <- bpparam()
+bpnthreads(BPPARAM) <- params$nthreads
+gr_list <- BiocParallel::bpmapply(.build_granges_from_cnv,
+    best_fit_files, l2r_files,
+    SIMPLIFY=FALSE, USE.NAMES=TRUE, BPPARAM=BPPARAM
 )
+
 # removing directory paths
 names(gr_list) <- basename(names(gr_list))
 
 # -- 4. Construct a RaggedExperiment object
-ragged_exp <- as(gr_list, "RaggedExperiment")
+ragged_exp <- as(GRangesList(gr_list), "RaggedExperiment")
 
 # include annotated bins to summarize the RaggedExperiment with
 txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
