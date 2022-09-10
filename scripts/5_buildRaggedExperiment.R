@@ -43,7 +43,7 @@ l2r_files <- Map(
 }
 
 BPPARAM <- BiocParallel::bpparam()
-BiocParallel::bpnworkers(BPPARAM) <- params$nthreads
+BiocParallel::bpworkers(BPPARAM) <- params$nthreads
 gr_list <- BiocParallel::bpmapply(.build_granges_from_cnv,
     best_fit_files, l2r_files,
     SIMPLIFY=FALSE, USE.NAMES=TRUE, BPPARAM=BPPARAM
