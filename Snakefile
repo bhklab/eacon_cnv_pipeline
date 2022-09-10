@@ -43,7 +43,7 @@ ref_symbol = reference.split(".")[-1]
 nthreads=config["nthreads"]
 array_type=config["array_type"]
 
-tcn_cutoffs = config["tcn_cutoffs"]
+tcn_cutoffs = NULL
 feature_numbers = config["feature_numbers"]
 drop_sex = config["drop_sex"]
 feature_col = config["feature_col"]
@@ -52,12 +52,8 @@ feature_col = config["feature_col"]
 # -- 0.3 All rule, defines the final output of this pipeline and runs all necessary steps
 rule all:
     input:
-        ranked_feature_file=f"{results_dir}/{analysis_name}_features_sorted_by_mad.csv",
-        feature_number_files=expand(
-            "{results_dir}/{analysis_name}_{feature_number}_most_variant_{feature_type}.csv",
-            results_dir=results_dir, analysis_name=analysis_name,
-            feature_number=feature_numbers, feature_type="regions"
-        )
+        f"{results_dir}/{analysis_name}_RagExp_pass_qc_custom_tcn.qs" if
+            len(tcn_cutoffs) else f"{results_dir}/{analysis_name}_RagExp_pass_qc.qs"
 
 
 # -- 1. Batch processing of raw CEL or BAM files
@@ -168,47 +164,11 @@ rule sample_quality_control:
 # -- 7. Use custom log2r cut-offs for calling TCN, useful if cellularity is known
 rule custom_total_copy_calls:
     input:
-        gr_list=f"{results_dir}/{analysis_name}_grList_pass_qc.qs"
-            if len(tcn_cutoffs) > 0 else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs"
-            if len(tcn_cutoffs) > 0 else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs"
-            if len(tcn_cutoffs) > 0 else None
+        f"{results_dir}/{analysis_name}_RagExp_pass_qc.qs"
     params:
         tcn_cutoffs=tcn_cutoffs
     output:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs"
-            if len(tcn_cutoffs) > 0 else None,
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs"
-            if len(tcn_cutoffs) > 0 else None,
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs"
-            if len(tcn_cutoffs) > 0 else None
+        f"{results_dir}/{analysis_name}_RagExp_pass_qc_custom_tcn.qs" if
+            len(tcn_cutoffs) else f"{results_dir}/{analysis_name}_RagExp_pass_qc.qs"
     script:
         "scripts/7_customTotalCopyCalls.R"
-
-
-# -- 8. Select top variant features (CNV regions)
-rule select_top_variant_features:
-    input:
-        gr_list=f"{results_dir}/{analysis_name}_grList_passed_qc.qs"
-            if len(tcn_cutoffs) == 0
-            else f"{results_dir}/{analysis_name}_grList_passed_qc_custom_tcn.qs",
-        bins_sumexp=f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc.qs"
-            if len(tcn_cutoffs) == 0
-            else f"{results_dir}/{analysis_name}_bins_SumExp_passed_qc_custom_tcn.qs",
-        genes_sumexp=f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc.qs"
-            if len(tcn_cutoffs) == 0
-            else f"{results_dir}/{analysis_name}_gene_SumExp_passed_qc_custom_tcn.qs"
-    params:
-        feature_numbers=feature_numbers,
-        drop_sex=drop_sex,
-        feature_col=feature_col
-    output:
-        ranked_feature_file=f"{results_dir}/{analysis_name}_features_sorted_by_mad.csv",
-        feature_number_files=expand(
-            "{results_dir}/{analysis_name}_{feature_number}_most_variant_{feature_type}.csv",
-            results_dir=results_dir, analysis_name=analysis_name,
-            feature_number=feature_numbers, feature_type="regions"
-        )
-    script:
-        "scripts/8_selectTopFeatures.R"

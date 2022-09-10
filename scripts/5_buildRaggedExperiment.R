@@ -59,7 +59,7 @@ annotated_genes <- annotateGRangesWithTxDB(gene_granges, txdb=txdb)
 metadata(ragged_exp) <- list(
     annotated_genome_bins=annotated_bins,
     annotated_genes=annotated_genes,
-    simpifyReduce=function(scores, ranges, qranges) {
+    simplifyReduce=function(scores, ranges, qranges) {
         if (is.numeric(scores)) {
             x <- mean(scores, na.rm=TRUE)
         } else {
