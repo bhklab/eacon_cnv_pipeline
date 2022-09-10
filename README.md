@@ -133,7 +133,7 @@ The pipeline can also be run rule by rule using the rule names.
 
 `snakemake --cores 2 --use-conda select_optimal_gamma`
 
-#### Build Bioconductor SummarizedExperiment Objects
+#### Build Bioconductor RaggedExperiment Object
 
 `snakemake --cores 2 --use-conda build_ragged_experiment`
 
