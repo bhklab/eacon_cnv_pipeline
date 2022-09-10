@@ -48,7 +48,7 @@ using:
 `conda env create --file env/eacon.yml`
 
 This will take some time to run as it gathers and installs the correct
-package versions. The environent it creates should be called `eacon`.
+package versions. The environment it creates should be called `eacon`.
 
 If it is not automatically activated after installation please run
 `conda activate eacon` before proceeding to the next step.
@@ -71,7 +71,7 @@ If intialization doesn't trigger dependency installation, you can do so manually
 
 `Rscript -e 'renv::restore()'`
 
-For more information on renv and how it can be used to manage dependencies in
+For more information on `renv` and how it can be used to manage dependencies in
 your project, please see: https://rstudio.github.io/renv/articles/renv.html.
 
 ## Configuring the Pipeline
@@ -80,7 +80,7 @@ This pipeline assumes the following directory structure:
 
 ```
 .
-├── envs
+├── env
 ├── metadata
 ├── procdata
 ├── rawdata

@@ -2,7 +2,7 @@
 renv::activate()
 library(EaCoN)
 library(Biobase)
-library(SummarizedExperiment)
+library(RaggedExperiment)
 library(data.table)
 library(qs)
 
@@ -21,40 +21,24 @@ qc_dt$sample_name <- gsub("_.*$", "", basename(qc_files))
 # 2 -- Output the QC results
 fwrite(qc_dt, output$qc_csv)
 
-# 3 -- Load the SummarizedExperiments and filter on QC criteria
-cnv_list <- lapply(input$cnv_objects, FUN=qread)
+# 3 -- Load the RaggedExperiment and filter on QC criteria
+ragged_exp <- qread(input$ragged_exp)
 
 # 4 -- Identify samples passing QC
 qc_dt <- qc_dt[
-    MAPD < params$mapd & `nd-waviness-sd` < params$ndwavinesssd &
-        SNPQC > params$snpqc,
+    MAPD <= params$mapd & `waviness-sd` <= params$ndwavinesssd &
+        SNPQC >= params$snpqc,
 ]
 if (params$cellularity > 0) {
-    qc_dt <- qc_dt[`TUSCAN-cellularity` > params$cellularity]
+    if ("TUSCAN-cellularity" %in% colnames(qcdt))
+        qc_dt <- qc_dt[`TUSCAN-cellularity` >= params$cellularity]
 }
-# Some samples may pass qc but failed to convege when selecting optimal gamma
-# The results of optimal gamma selection are non-deterministic and depend on
-#   the pipeline configuration
-# As a result we need to interesect the actual samples with those passing qc
-existing_samples <- unique(Reduce(c, lapply(cnv_list, colnames)))
-keep_samples <- intersect(existing_samples, qc_dt$sample_name)
+keep_samples <- intersect(colnames(ragged_exp), qc_dt$sample_name)
+print(keep_samples)
 
-# 5 -- Subset SummarizedExperiments
-.subset_by_class <- function(x, keep) {
-    if (is(x, "SummarizedExperiment")) {
-        x[, keep]
-    } else if(is(x, "GRangesList")) {
-        x[keep]
-    } else {
-        stop("Unsupported object class!")
-    }
-}
-cnv_list <- Map(f=.subset_by_class, x=cnv_list, keep=list(keep_samples))
-for (i in seq_along(cnv_list)) {
-    metadata(cnv_list[[i]])$qc_parameters <- params[-1]
-}
+# 5 -- Subset RaggedExperiment
+ragged_exp <- ragged_exp[, keep_samples]
+metadata(ragged_exp)$qc_parameters <- params[-c(1, 2)]
 
-# 6 -- Write SummarizedExperment to disk
-for (i in seq_along(cnv_list)) {
-    qsave(cnv_list[[i]], output$cnv_objects[i])
-}
+# 6 -- Write RaggedExperiment to disk
+qsave(ragged_exp, file=output$ragged_exp, nthreads=params$nthreads)

@@ -4,8 +4,10 @@
 # -- Resource configuration --
 
 # Maximum number of threads to use
-nthreads: 12
+nthreads: 10
 
+# Type of paralellization to use (FORK for Linux or PSOCK for Windows)
+cluster_type: FORK
 
 # -- Pipeline configuration --
 
@@ -26,7 +28,7 @@ procdata_dir: procdata
 # Where should the final results be written?
 results_dir: results
 
-# What type of array data?
+# -- What is the assay platform?
 
 # Options are:
 # - cytoscan for: CytoscanHD, CytoScan750k
@@ -46,6 +48,7 @@ reference: BSgenome.Hsapiens.UCSC.hg19
 
 # Name of the pairs file for the .CEL files, just the name, path will be
 #   built using the metadata_dir.
+# Must be .tsv format!
 # See https://github.com/gustaveroussy/EaCoN for information
 #   on the formatting the file for different array_families
 pairs_file: CEL_file_pairs.tsv
@@ -62,13 +65,13 @@ segmenter: ASCAT
 smoothk: 5
 
 # Should be 40 for Oncoscan, 20 for Cytoscan, 60 for SNP6 and 2-10 for WES
-SER_pen: 20
+SER_pen: 60
 
 # Should be 0.5 for Oncoscan and WES; 1.0 for CytoscanHD and 0.25 for SNP6
-nrf: 0.5
+nrf: 0.25
 
 # Should be 0.9 for Oncoscan, 0.75 for all others
-BAF_filter: 0.9
+BAF_filter: 0.75
 
 # --- Copy number estimation parameters
 
@@ -80,7 +83,7 @@ gamma_range: [0.35, 0.95]
 
 # Maximum value of MAPD, metric of short-range noisiness; recommendation for
 # FFPE samples is 0.3
-mapd: 0.35
+mapd: 0.4
 
 # Maximum value of ndWavinessSD, a metric of long-range noisiness
 ndwavinesssd: 0.3
@@ -92,7 +95,7 @@ snpqc: 0
 
 # Minimum cellularity (proportion tumour) for sample inclusion; set this to 0
 # if samples have already been confirmed to be pure by a pathologist
-# WARNING: samples with NA cellarity are dropped when cellularity > 0!
+# WARNING: samples with NA cellularity are dropped when cellularity > 0!
 cellularity: 0
 
 # ---- Custom total copy number cut-offs
@@ -115,14 +118,6 @@ tcn_cutoffs: {
 # --- Feature selection parameters
 
 # Which column contains the feature of interest? This should be either
-#  seg.mean or TCN unless you have applied custom total copy number
+#  log2r or TCN unless you have applied custom total copy number
 # To select a custom column, prepend tcn_ to the name of the custom cut-off
 feature_col: tcn_50_pct
-
-# Should the sex chromosomes be removed from the feature selection?
-drop_sex: true
-
-# Creates on or more subsets of the CNV for each number in feature_numbers
-# These are selected based on ordering by row-wise median absolute deviance
-# (mad)
-feature_numbers: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000]
