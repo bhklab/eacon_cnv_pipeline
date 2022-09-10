@@ -132,30 +132,25 @@ rule select_optimal_gamma:
         "scripts/4_selectOptimalGamma.R"
 
 
-# -- 5. Build SummarizedExperiment
-rule build_summarized_experiments:
+# -- 5. Build RaggedExperiment
+rule build_ragged_experiment:
     input:
-        gr_cnv=f"{procdata}/{analysis_name}_optimal_gamma_list.qs",
-        pairs_file=os.path.join(metadata, pairs_file)
+        f"{procdata}/{analysis_name}_optimal_gamma.csv"
     params:
+        out_dir=procdata,
         nthreads=nthreads,
         analysis_name=analysis_name,
         results=results_dir
     output:
-        [f"{results_dir}/{analysis_name}_{feature}_SumExp.qs" for feature
-            in ["bins", "gene"]]
+        f"{results_dir}/{analysis_name}_RagExp.qs"
     script:
-        "scripts/5_buildSummarizedExperiments.R"
+        "scripts/5_buildRaggedExperiment.R"
 
 
 # -- 6. QC filter samples
 rule sample_quality_control:
     input:
-        cnv_objects=[
-            *[f"{results_dir}/{analysis_name}_{feature}_SumExp.qs"
-                for feature in ["bins", "gene"]],
-            f"{results_dir}/{analysis_name}_grList.qs"
-        ]
+        f"{results_dir}/{analysis_name}_RagExp.qs"
     params:
         procdata=procdata,
         mapd=config["mapd"],
@@ -164,11 +159,7 @@ rule sample_quality_control:
         cellularity=config["cellularity"]
     output:
         qc_csv=os.path.join(procdata, "sample_qc.csv"),
-        cnv_objects=[
-            *[f"{results_dir}/{analysis_name}_{feature}_SumExp_passed_qc.qs"
-                for feature in ["bins", "gene"]],
-            f"{results_dir}/{analysis_name}_grList_pass_qc.qs"
-        ]
+        cnv_objects=f"{results_dir}/{analysis_name}_RagExp_pass_qc.qs"
     script:
         "scripts/6_sampleQualityControl.R"
 

@@ -14,10 +14,13 @@ input <- snakemake@input
 params <- snakemake@params
 output <- snakemake@output
 
-# -- 1. Load the optimal gamma for each sample
-best_fits <- fread(input)
+# -- 0.3 Load utity functions
+source(file.path("scripts", "utils.R"))
 
-# -- 2. Find the .RDS files associated with the best fit
+# -- 1. Load the optimal gamma for each sample
+best_fits <- fread(input[[1]])
+
+# -- 2. Find the .RDS files associated with the best fits
 best_fit_files <- Map(
     function(x, y)
         grep(pattern=y, list.files(x, recursive=TRUE, full.names=TRUE), value=TRUE),
@@ -71,4 +74,4 @@ metadata(ragged_exp) <- list(
 )
 
 # -- Save files to disk
-qsave(ragged_exp, file=output[1], nthreads=params$nthread)
+qsave(ragged_exp, file=output[[1]], nthreads=params$nthread)

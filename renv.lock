@@ -513,6 +513,26 @@
         "plogr"
       ]
     },
+    "RaggedExperiment": {
+      "Package": "RaggedExperiment",
+      "Version": "1.18.0",
+      "Source": "Bioconductor",
+      "git_url": "https://git.bioconductor.org/packages/RaggedExperiment",
+      "git_branch": "RELEASE_3_14",
+      "git_last_commit": "c6fdb32",
+      "git_last_commit_date": "2021-10-26",
+      "Hash": "3d7acdcee5d62e8b388aa32f5d024a65",
+      "Requirements": [
+        "BiocGenerics",
+        "GenomeInfoDb",
+        "GenomicRanges",
+        "IRanges",
+        "Matrix",
+        "MatrixGenerics",
+        "S4Vectors",
+        "SummarizedExperiment"
+      ]
+    },
     "Rcpp": {
       "Package": "Rcpp",
       "Version": "1.0.9",
